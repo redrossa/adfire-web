@@ -5,17 +5,88 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+  --font-stack-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-stack-code: 'Source Code Pro', monospace;
 }
 
 @media (prefers-color-scheme: dark) {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    /*--background: #0a0a0a;*/
+    /*--foreground: #ededed;*/
   }
+}
+
+html {
+  font-size: 62.5%;
 }
 
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+}
+
+h1 {
+  font-size: 6rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 3.6rem;
+  font-weight: 800;
+  line-height: 1.33;
+}
+
+h3 {
+  font-size: 3.6rem;
+  line-height: 1.33;
+  font-weight: normal;
+}
+
+h4 {
+  font-size: 2.4rem;
+  line-height: 1.33;
+  font-weight: normal;
+}
+
+h5 {
+  font-size: 1.6rem;
+  font-weight: 600;
+  line-height: 1.5;
+}
+
+h6 {
+  font-size: 1.4rem;
+  line-height: 1.33;
+  letter-spacing: 1px;
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+p {
+  font-size: 1.6rem;
+  line-height: 1.5;
+  /*color: var(--color-text-default-contrast);*/
+}
+
+a {
+  /*color: var(--color-text-high-contrast);*/
+  text-decoration: none;
+}
+
+small {
+  font-size: 1.2rem;
+  line-height: 1.33;
+  letter-spacing: 0.25px;
+}
+
+code {
+  @apply font-mono;
+  font-size: 1.4rem;
+  white-space: pre-wrap;
+  word-break: break-word;
+  /*background-color: var(--color-fill-bg-secondary);*/
+  /*border-radius: $border-radius;*/
+  padding: 0.2rem 0.4rem;
+  /*color: $black;*/
 }
