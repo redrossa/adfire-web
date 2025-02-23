@@ -1,5 +1,7 @@
 import Container from '@/components/Container';
 import overview from '../.reports/index.json';
+import CategoryTag from '@/components/CategoryTag';
+import AmountTag from '@/components/AmountTag';
 
 export default function Home() {
   return (
@@ -13,18 +15,15 @@ export default function Home() {
             </div>
             {overview.map((item, i) => (
                 <div
-                    className="w-full p-10 grid grid-cols-5 grid-rows-2 border-t border-solid border-neutral-200"
+                    className="w-full p-10 grid grid-cols-5 grid-rows-2 gap-x-16 border-t border-solid border-neutral-200"
                     key={i}
                 >
                   <h6 className="place-content-end font-light">{item.date}</h6>
-                  <h5 className="place-content-end col-span-3 align-middle">{item.account_name}</h5>
-                  <div
-                      className={`row-span-2 p-2 border flex items-center justify-center ${item.amount >= 0 ? 'border-green-500 text-green-500' : 'border-red-500 text-red-500'}`}
-                  >
-                    <code className="text-center">{Math.abs(item.amount)} {item.symbol}</code>
-                  </div>
-                  <div className="col-start-2 flex items-center">
-                    <small className="col-start-2 bg-neutral-100 text-neutral-600 py-0.5 px-2 rounded-full">{item.category}</small>
+                  <h5 className="place-content-end col-span-3 align-middle">{item.title}</h5>
+                  <AmountTag value={item.amount} isChange={item.type !== 'open'} />
+                  <div className="col-start-2 col-span-3 flex items-center gap-4">
+                    <small>{item.account}</small>
+                    {item.category && <CategoryTag category={item.category} />}
                   </div>
                 </div>
             ))}
