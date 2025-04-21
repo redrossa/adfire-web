@@ -6,12 +6,8 @@ import { auth, signOut } from '@/auth';
 
 const Navbar = async () => {
   const session = await auth();
-  if (!session) {
-    return null;
-  }
-
   return (
-      <nav className="w-screen flex items-center justify-between px-12 py-6">
+      <nav className="w-screen flex items-center justify-between px-12 h-24 py-6">
         <Link href="/" className="flex items-center gap-2">
           <Image
               src="/vercel.svg"
@@ -20,19 +16,25 @@ const Navbar = async () => {
               height={16}
           />
         </Link>
-        <form
-            action={async () => {
-              'use server';
-              await signOut();
-            }}
-            className="flex items-center gap-8"
-        >
-          <TextButton type="submit">
-            Sign Out
-          </TextButton>
-          <Image src={session.user?.image as string} alt={`${session.user?.name}'s Profile Picture`} width={32}
-                 height={32} className="rounded-full" />
-        </form>
+        {session && (
+            <form
+                action={async () => {
+                  'use server';
+                  await signOut();
+                }}
+                className="flex items-center gap-8"
+            >
+              <TextButton type="submit">
+                Sign Out
+              </TextButton>
+              <Image
+                  src={session.user?.image as string}
+                  alt={`${session.user?.name}'s Profile Picture`}
+                  width={32}
+                  height={32} className="rounded-full"
+              />
+            </form>
+        )}
       </nav>
   );
 };

@@ -1,13 +1,8 @@
+import Landing from '@/app/Landing';
 import { auth } from '@/auth';
-import SignedOut from '@/app/SignedOut';
-import SignedIn from '@/app/SignedIn';
+import User from '@/app/User';
 
-export default async function Home() {
+export default async function RootPage() {
   const session = await auth();
-
-  return (
-      <div className="flex flex-col items-center">
-        {!session ? <SignedOut /> : <SignedIn />}
-      </div>
-  );
+  return !session?.user?.name ? <Landing /> : <User user={session.user.name} />;
 }
