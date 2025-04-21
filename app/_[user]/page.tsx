@@ -1,4 +1,4 @@
-import User from '@/app/User';
+import User from '@/app/_[user]/User';
 
 interface Props {
   params: {

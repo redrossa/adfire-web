@@ -1,6 +1,6 @@
 import Landing from '@/app/Landing';
 import { auth } from '@/auth';
-import User from '@/app/User';
+import User from '@/app/_[user]/User';
 
 export default async function RootPage() {
   const session = await auth();
