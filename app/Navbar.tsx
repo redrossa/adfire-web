@@ -19,7 +19,6 @@ const Navbar = async () => {
               width={16}
               height={16}
           />
-          <h5>Adfire</h5>
         </Link>
         <form
             action={async () => {
