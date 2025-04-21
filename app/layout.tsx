@@ -14,8 +14,8 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: 'Adfire Portfolio',
-  description: 'Explore and view complete portfolio reports'
+  title: 'Adfire',
+  description: 'Track your finances, devise strategies, project the future with Adfire'
 };
 
 export default function RootLayout({
