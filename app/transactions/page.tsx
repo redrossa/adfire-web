@@ -1,7 +1,6 @@
 import { Button } from '@headlessui/react';
 import Link from 'next/link';
 import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
-import Container from '@/components/Container';
 
 const mockTransactions = [
   {
@@ -84,7 +83,7 @@ export default function TransactionsPage() {
           {!transactions.length ? (
               <p>You have no transactions on file. Add a transaction to view your portfolio summary.</p>
           ) : (
-              <Container className="flex flex-col divide-y">
+              <div className="container flex flex-col divide-y">
                 {transactions.map((transaction) => (
                     <div key={transaction.name} className="p-8 flex items-center">
                       <div className="flex flex-col">
@@ -97,7 +96,7 @@ export default function TransactionsPage() {
                       </Button>
                     </div>
                 ))}
-              </Container>
+              </div>
           )}
         </section>
       </main>

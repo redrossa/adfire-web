@@ -1,12 +1,11 @@
 import { Button, Field, Fieldset, Input, Label } from '@headlessui/react';
 import { PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import Container from '@/components/Container';
 import AccountUserEditor from '@/app/accounts/AccountUserEditor';
 
 const AccountEditor = () => {
   return (
-      <Container className="p-16 bg-background" float>
+      <div className="container shadow-md p-16 bg-background">
         <Fieldset>
           <Field className="flex flex-col">
             <Label className="h6">Account Name</Label>
@@ -34,7 +33,7 @@ const AccountEditor = () => {
             </Button>
           </div>
         </Fieldset>
-      </Container>
+      </div>
   );
 };
 

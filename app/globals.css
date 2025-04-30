@@ -90,3 +90,9 @@ code, .code {
   padding: 0.2rem 0.4rem;
   /*color: $black;*/
 }
+
+@layer components {
+  .container {
+    @apply w-full border border-solid border-neutral-200 rounded-sm;
+  }
+}

@@ -1,12 +1,11 @@
 import { Button, Field, Fieldset, Input, Label } from '@headlessui/react';
 import { PlusIcon } from '@heroicons/react/24/outline';
-import Container from '@/components/Container';
 import Link from 'next/link';
 import TransactionEntryEditor from '@/app/transactions/TransactionEntryEditor';
 
 const TransactionEditor = () => {
   return (
-      <Container className="p-16 bg-background" float>
+      <div className="container shadow-md p-16 bg-background">
         <Fieldset>
           <Field className="flex flex-col">
             <Label className="h6">Transaction Name</Label>
@@ -50,7 +49,7 @@ const TransactionEditor = () => {
             </Button>
           </div>
         </Fieldset>
-      </Container>
+      </div>
   );
 };
 

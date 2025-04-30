@@ -1,7 +1,6 @@
 import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Button } from '@headlessui/react';
 import Link from 'next/link';
-import Container from '@/components/Container';
 
 const mockAccounts = [
   {
@@ -44,7 +43,7 @@ export default function AccountsPage() {
           {!accounts.length ? (
               <p>You have no accounts on file. Add an account to start tracking transactions.</p>
           ) : (
-              <Container className="flex flex-col divide-y">
+              <div className="container flex flex-col divide-y">
                 {accounts.map((account) => (
                     <div key={account.name} className="p-8 flex items-center">
                     <div className="flex flex-col">
@@ -56,7 +55,7 @@ export default function AccountsPage() {
                       </Button>
                     </div>
                 ))}
-              </Container>
+              </div>
           )}
         </section>
       </main>
