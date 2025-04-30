@@ -3,7 +3,6 @@ import Image from 'next/image';
 
 const Dashboard = async () => {
   const session = await auth();
-  console.log(session);
   return (
       <div className="container shadow-md p-16 flex items-center gap-16">
         <Image
