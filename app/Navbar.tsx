@@ -6,12 +6,13 @@ import { ArrowLeftStartOnRectangleIcon, Cog8ToothIcon, UserIcon } from '@heroico
 
 const navigation = [
   { name: 'Dashboard', href: '/', current: true, disabled: true },
-  { name: 'Activities', href: '/activities', current: false, disabled: true }
+  { name: 'Transactions', href: '/transactions' },
+  { name: 'Accounts', href: '/accounts' },
 ];
 
 const profileMenus = [
   { name: 'Profile', Icon: UserIcon, href: '/profile', disabled: true },
-  { name: 'Settings', Icon: Cog8ToothIcon, href: '/settings' }
+  { name: 'Settings', Icon: Cog8ToothIcon, href: '/settings', disabled: true },
 ];
 
 const Navbar = async () => {
@@ -40,7 +41,7 @@ const Navbar = async () => {
                                 key={item.name}
                                 href={item.href}
                                 aria-current={item.current ? 'page' : undefined}
-                                className="rounded-md px-3 py-2 text-sm font-medium"
+                                className="rounded-md px-3 py-2 text-sm font-medium transition-colors hover:text-blue-600"
                             >
                               <p>{item.name}</p>
                             </Link>
@@ -68,7 +69,7 @@ const Navbar = async () => {
                       {profileMenus.filter(item => !item.disabled).map((item) => (
                           <MenuItem key={item.name}>
                             <Link
-                                href="#"
+                                href={item.href}
                                 className="flex items-center gap-4 w-full px-4 py-2 text-sm text-neutral-700 data-[focus]:bg-gray-100 data-[focus]:outline-hidden"
                             >
                               <item.Icon className="w-8 h-8" />
@@ -79,7 +80,7 @@ const Navbar = async () => {
                       <form
                           action={async () => {
                             'use server';
-                            await signOut();
+                            await signOut({ redirectTo: '/' });
                           }}
                       >
                         <MenuItem>

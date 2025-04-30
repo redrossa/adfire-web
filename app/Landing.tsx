@@ -1,6 +1,6 @@
 import { metadata } from '@/app/layout';
 import { signIn } from '@/auth';
-import Button from '@/components/Button';
+import { Button } from '@headlessui/react';
 
 const Landing = () => {
   return (
@@ -14,7 +14,9 @@ const Landing = () => {
               await signIn('google');
             }}
         >
-          <Button type="submit">
+          <Button
+              type="submit"
+              className="p inline-flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors bg-foreground font-medium text-background hover:bg-blue-600 py-2 px-4">
             Sign In
           </Button>
         </form>
