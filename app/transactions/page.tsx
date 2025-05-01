@@ -2,70 +2,24 @@ import { Button } from '@headlessui/react';
 import Link from 'next/link';
 import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 
-const mockTransactions = [
-  {
-    name: 'Kroger Groceries',
-    date: '2024-04-28',
-    amount: -100,
-    symbol: 'USD',
-    from: [
-      {
-        account: 'Amex Gold',
-        mask: '0001',
-        amount: 100,
-        symbol: 'USD',
-        date: '2024-04-28'
-      }
-    ],
-    to: [
-      {
-        account: 'Kroger',
-        amount: 100,
-        symbol: 'USD',
-        date: '2024-04-30'
-      }
-    ]
-  },
-  {
-    name: "Wendy's Wages",
-    date: '2024-04-15',
-    amount: 2200,
-    symbol: 'USD',
-    from: [
-      {
-        account: "Wendy's Hourly Wages",
-        amount: 2000,
-        symbol: 'USD',
-        date: '2024-04-15'
-      },
-      {
-        account: "Wendy's Bonus Wages",
-        amount: 200,
-        symbol: 'USD',
-        date: '2024-04-15'
-      }
-    ],
-    to: [
-      {
-        account: 'Chase Total Checking',
-        mask: '0000',
-        amount: 1500,
-        symbol: 'USD',
-        date: '2024-04-17'
-      },
-      {
-        account: 'Federal Income Taxes',
-        mask: '0000',
-        amount: 700,
-        symbol: 'USD',
-        date: '2024-04-15'
-      }
-    ]
-  }
-];
+interface Transaction {
+  id: string;
+  name: string;
+  date: string;
+  amount: number;
+  symbol: string;
+}
 
-export default function TransactionsPage() {
-  const transactions = mockTransactions;
+async function getTransactions(): Promise<Transaction[]> {
+  const response = await fetch(`${process.env.API_URL!}/transactions`);
+  if (!response.ok) {
+    throw new Error(response.statusText);
+  }
+  return await response.json();
+}
+
+export default async function TransactionsPage() {
+  const transactions = await getTransactions();
   return (
       <main>
         <div className="flex items-center justify-between">
@@ -91,7 +45,8 @@ export default function TransactionsPage() {
                         <small>{transaction.date}</small>
                       </div>
                       <code className="ml-auto mr-2">{transaction.amount} {transaction.symbol}</code>
-                      <Button className="rounded-full hover:bg-gray-100 hover:text-inherit text-gray-700 transition p-4">
+                      <Button
+                          className="rounded-full hover:bg-gray-100 hover:text-inherit text-gray-700 transition p-4">
                         <ChevronRightIcon className="w-8 h-8" />
                       </Button>
                     </div>
