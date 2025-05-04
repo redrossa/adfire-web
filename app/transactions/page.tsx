@@ -11,7 +11,7 @@ interface Transaction {
 }
 
 async function getTransactions(): Promise<Transaction[]> {
-  const response = await fetch(`${process.env.API_URL!}/transactions`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/transactions`);
   if (!response.ok) {
     throw new Error(response.statusText);
   }

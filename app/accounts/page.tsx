@@ -9,7 +9,7 @@ interface Account {
 }
 
 async function getAccounts(): Promise<Account[]> {
-  const response = await fetch(`${process.env.API_URL!}/accounts`);
+  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/accounts`);
   if (!response.ok) {
     throw new Error(response.statusText);
   }
