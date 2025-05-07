@@ -9,10 +9,10 @@ interface Props extends React.ComponentProps<typeof Button> {
 const IconButton = ({ Icon, className, ...props }: Props) => {
   return (
       <Button
-          className={`rounded-full data-[active]:bg-neutral-100 data-[hover]:text-blue-500 data-[disabled]:text-neutral-500 transition ease-out p-4 ${className}`}
+          className={`rounded-full data-[hover]:[&:not([data-disabled])]:bg-neutral-100 data-[active]:[&:not([data-disabled])]:bg-neutral-200 data-[hover]:[&:not([data-disabled])]:text-blue-500 data-[active]:[&:not([data-disabled])]:text-blue-600 data-[disabled]:text-neutral-500 transition-colors ease-out p-4 ${className}`}
           {...props}
       >
-        <Icon className="w-8 h-8" />
+        <Icon className="w-7 h-7" />
       </Button>
   );
 };
