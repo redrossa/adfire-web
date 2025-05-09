@@ -1,6 +1,7 @@
-import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
-import { Button } from '@headlessui/react';
+import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
+import { cookies } from 'next/headers';
+import { IconButton, SolidButton } from '@/components/forms';
 
 interface Account {
   id: string;
@@ -9,11 +10,22 @@ interface Account {
 }
 
 async function getAccounts(): Promise<Account[]> {
-  const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL!}/accounts`);
-  if (!response.ok) {
-    throw new Error(response.statusText);
+  const cookieStore = await cookies();
+
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts`, {
+    method: 'GET',
+    credentials: 'include',
+    headers: {
+      'Content-Type': 'application/json',
+      'Cookie': cookieStore.toString()
+    }
+  });
+
+  if (!res.ok) {
+    throw new Error(res.statusText);
   }
-  return await response.json();
+
+  return await res.json();
 }
 
 export default async function AccountsPage() {
@@ -22,14 +34,13 @@ export default async function AccountsPage() {
       <main>
         <div className="flex items-center justify-between">
           <h3>Accounts</h3>
-          <Button
+          <SolidButton
+              Icon={PlusIcon}
+              className="mt-8"
+              text="Add accounts"
               as={Link}
               href="/accounts/new"
-              className="inline-flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors bg-foreground font-medium text-background hover:bg-blue-600 py-2 px-4"
-          >
-            <PlusIcon className="w-6 h-6" />
-            <p>Add accounts</p>
-          </Button>
+          />
         </div>
         <section className="my-10">
           {!accounts.length ? (
@@ -38,13 +49,16 @@ export default async function AccountsPage() {
               <div className="container flex flex-col divide-y">
                 {accounts.map((account) => (
                     <div key={account.name} className="p-8 flex items-center">
-                    <div className="flex flex-col">
+                      <div className="flex flex-col">
                         <h5>{account.name}</h5>
                         <small>{account.usersCount} {account.usersCount === 1 ? 'user' : 'users'}</small>
                       </div>
-                      <Button className="ml-auto rounded-full hover:bg-gray-100 hover:text-inherit text-gray-700 transition p-4">
-                        <ChevronRightIcon className="w-8 h-8" />
-                      </Button>
+                      <IconButton
+                          className="ml-auto"
+                          Icon={PencilIcon}
+                          as={Link}
+                          href={`/accounts/${account.id}`}
+                      />
                     </div>
                 ))}
               </div>
