@@ -1,13 +1,9 @@
 import NextAuth from 'next-auth';
 import Google from 'next-auth/providers/google';
-import PostgresAdapter from '@auth/pg-adapter';
-import { Pool } from 'pg';
-
-const pool = new Pool({
-  connectionString: process.env.AUTH_DATABASE_URL
-});
+import { PrismaAdapter } from '@auth/prisma-adapter';
+import { prisma } from '@/db/prisma';
 
 export const { auth, handlers, signIn, signOut } = NextAuth({
-  adapter: PostgresAdapter(pool),
+  adapter: PrismaAdapter(prisma),
   providers: [Google]
 });
