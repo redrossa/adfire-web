@@ -3,14 +3,14 @@ import * as React from 'react';
 
 type Role = 'info' | 'success' | 'warning' | 'alert';
 
-interface Props extends React.ComponentProps<typeof Button> {
+export interface TextButtonProps extends React.ComponentProps<typeof Button> {
   Icon?: React.ForwardRefExoticComponent<React.PropsWithoutRef<React.SVGProps<SVGSVGElement>> & { title?: string, titleId?: string } & React.RefAttributes<SVGSVGElement>>;
   text: string;
   role?: Role;
   [key: string]: any;
 }
 
-const TextButton = ({ Icon, text, role, className, ...props }: Props) => (
+const TextButton = ({ Icon, text, role, className, ...props }: TextButtonProps) => (
     <Button
         className={`
         flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors ease-out font-medium 

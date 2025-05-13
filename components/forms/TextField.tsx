@@ -1,13 +1,13 @@
 import { Description, Field, Input, Label } from '@headlessui/react';
 import { InputHTMLAttributes } from 'react';
 
-interface Props extends InputHTMLAttributes<HTMLInputElement> {
+export interface TextFieldProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   description?: string;
   error?: string | null;
 }
 
-const TextField = ({ label, description, placeholder, error, className, ...props }: Props) => (
+const TextField = ({ label, description, placeholder, error, className, ...props }: TextFieldProps) => (
     <Field className={`flex flex-col gap-2 ${className}`}>
       {label && <Label className="h6">{label}</Label>}
       {description && <Description className="p">{description}</Description>}
