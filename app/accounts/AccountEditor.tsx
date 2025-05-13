@@ -6,6 +6,8 @@ import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { IconButton, SolidButton, TextButton, TextField } from '@/components/forms';
 import { useRouter } from 'next/navigation';
 import { Account, AccountUser } from '@/models';
+import { createAccount, deleteAccount, updateAccount } from '@/services';
+import { Fragment } from 'react';
 
 const emptyUser: AccountUser = {
   name: '',
@@ -38,42 +40,24 @@ const AccountEditor = ({ account }: Props) => {
     name: 'users'
   });
 
-  const onSubmit: SubmitHandler<Account> = async (data) => {
+  const onSubmit: SubmitHandler<Account> = async data => {
     const isNew = !account?.id;
-    const url = isNew ? `${process.env.NEXT_PUBLIC_API_URL}/accounts`
-        : `${process.env.NEXT_PUBLIC_API_URL}/accounts/${account.id}`;
-    const res = await fetch(url, {
-      method: isNew ? 'POST' : 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(data)
-    });
+    const service = isNew ? createAccount : updateAccount;
 
-    if (!res.ok) {
-      setError('root', {
-        type: res.status.toString(),
-        message: res.statusText
-      });
-    } else {
+    try {
+      await service(data);
       router.push('/accounts');
+    } catch (err) {
+      setError('root', { message: (err as Error).message });
     }
   };
 
   const onDelete = async (id: string) => {
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`, {
-      method: 'DELETE',
-      credentials: 'include'
-    });
-
-    if (!res.ok) {
-      setError('root', {
-        type: res.status.toString(),
-        message: res.statusText
-      });
-    } else {
+    try {
+      await deleteAccount(id);
       router.push('/accounts');
+    } catch (err) {
+      setError('root', { message: (err as Error).message });
     }
   };
 
@@ -87,10 +71,10 @@ const AccountEditor = ({ account }: Props) => {
               {...register('name', { required: true })}
           />
           <div className="mt-8 border-t border-foreground pt-8 grid grid-cols-[1fr_auto_auto] gap-y-2 gap-x-4">
-            <h6 className="">Cardholder Name</h6>
+            <h6>Cardholder Name</h6>
             <h6 className="col-span-2">Mask</h6>
             {fields.map((field, index) => (
-                <>
+                <Fragment key={index}>
                   <TextField
                       className="flex-1"
                       placeholder="John Doe"
@@ -107,7 +91,7 @@ const AccountEditor = ({ account }: Props) => {
                       onClick={() => remove(index)}
                       Icon={TrashIcon}
                   />
-                </>
+                </Fragment>
             ))}
           </div>
           <TextButton
@@ -116,13 +100,13 @@ const AccountEditor = ({ account }: Props) => {
               text="Add users"
               onClick={() => append(emptyUser)}
           />
-          <div className="mt-8 flex gap-2">
-            {account && (
+          <div className="mt-8 flex items-center gap-2">
+            {account?.id && (
                 <TextButton
                     role="alert"
                     Icon={TrashIcon}
                     text="Delete"
-                    onClick={() => account?.id && onDelete(account.id)}
+                    onClick={() => onDelete(account.id!)}
                 />
             )}
             <TextButton

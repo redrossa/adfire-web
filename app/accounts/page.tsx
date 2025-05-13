@@ -1,32 +1,7 @@
 import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { cookies } from 'next/headers';
 import { IconButton, SolidButton } from '@/components/forms';
-
-interface Account {
-  id: string;
-  name: string;
-  usersCount: number;
-}
-
-async function getAccounts(): Promise<Account[]> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      'Cookie': cookieStore.toString()
-    }
-  });
-
-  if (!res.ok) {
-    throw new Error(res.statusText);
-  }
-
-  return await res.json();
-}
+import { getAccounts } from '@/services';
 
 export default async function AccountsPage() {
   const accounts = await getAccounts();
@@ -51,7 +26,7 @@ export default async function AccountsPage() {
                     <div key={account.name} className="p-8 flex items-center">
                       <div className="flex flex-col">
                         <h5>{account.name}</h5>
-                        <small>{account.usersCount} {account.usersCount === 1 ? 'user' : 'users'}</small>
+                        <small>{account.users.length} {account.users.length === 1 ? 'user' : 'users'}</small>
                       </div>
                       <IconButton
                           className="ml-auto"
