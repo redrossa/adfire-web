@@ -11,7 +11,7 @@
    ```bash
    # Copy the example env file
    cp .env.example .env.local
-   
+
    # Create auth secret
    npx auth
    ```

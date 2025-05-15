@@ -1,10 +1,12 @@
 'use server';
 
-import { Account } from '@/models';
+import { Account } from '../models';
 import { cookies } from 'next/headers';
-import { handleResponse } from '@/services/utils';
+import { handleResponse } from '@/lib/services/utils';
 
-export async function getAccounts(includeMerchants: boolean = false): Promise<Account[]> {
+export async function getAccounts(
+  includeMerchants: boolean = false,
+): Promise<Account[]> {
   const cookieStore = await cookies();
 
   const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/accounts`);
@@ -14,8 +16,8 @@ export async function getAccounts(includeMerchants: boolean = false): Promise<Ac
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': cookieStore.toString()
-    }
+      Cookie: cookieStore.toString(),
+    },
   });
 
   return await handleResponse(res);
@@ -29,8 +31,8 @@ export async function getAccount(id: string): Promise<Account> {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': cookieStore.toString()
-    }
+      Cookie: cookieStore.toString(),
+    },
   });
 
   return await handleResponse(res);
@@ -43,8 +45,8 @@ export async function deleteAccount(id: string): Promise<void> {
     method: 'DELETE',
     credentials: 'include',
     headers: {
-      'Cookie': cookieStore.toString()
-    }
+      Cookie: cookieStore.toString(),
+    },
   });
 
   return await handleResponse(res);
@@ -58,9 +60,9 @@ export async function createAccount(account: Account): Promise<Account> {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': cookieStore.toString()
+      Cookie: cookieStore.toString(),
     },
-    body: JSON.stringify(account)
+    body: JSON.stringify(account),
   });
 
   return await handleResponse(res);
@@ -76,9 +78,9 @@ export async function updateAccount(account: Account): Promise<Account> {
     credentials: 'include',
     headers: {
       'Content-Type': 'application/json',
-      'Cookie': cookieStore.toString()
+      Cookie: cookieStore.toString(),
     },
-    body: JSON.stringify(account)
+    body: JSON.stringify(account),
   });
 
   return await handleResponse(res);

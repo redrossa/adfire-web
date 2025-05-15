@@ -1,5 +1,5 @@
 import AccountEditor from '@/app/accounts/AccountEditor';
-import { getAccount } from '@/services';
+import { getAccount } from '@/lib/services';
 
 interface Params {
   id: string;
