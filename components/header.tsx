@@ -41,6 +41,24 @@ const navLinks: NavLink[] = [
 function Header() {
   const isMobile = useIsMobile();
   const session = useSession();
+  const { theme, setTheme } = useTheme();
+
+  const smartToggle = () => {
+    /* The smart toggle by @nrjdalal */
+    const prefersDarkScheme = window.matchMedia(
+      '(prefers-color-scheme: dark)',
+    ).matches;
+    if (theme === 'system') {
+      setTheme(prefersDarkScheme ? 'light' : 'dark');
+    } else if (
+      (theme === 'light' && !prefersDarkScheme) ||
+      (theme === 'dark' && prefersDarkScheme)
+    ) {
+      setTheme(theme === 'light' ? 'dark' : 'light');
+    } else {
+      setTheme('system');
+    }
+  };
 
   return (
     <header className="relative mb-14">
@@ -144,6 +162,19 @@ function Header() {
                     <DropdownMenuItem
                       className="cursor-pointer outline-hidden focus:underline"
                       asChild
+                    >
+                      <div onClick={smartToggle}>
+                        <SunMoonIcon
+                          className="opacity-60"
+                          size={16}
+                          aria-hidden
+                        />
+                        <p>Switch themes</p>
+                      </div>
+                    </DropdownMenuItem>
+                    <DropdownMenuItem
+                      className="cursor-pointer outline-hidden focus:underline"
+                      asChild
                       variant="destructive"
                     >
                       <div onClick={() => signOut()}>
@@ -158,7 +189,6 @@ function Header() {
                   </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
-              <ThemeToggle />
             </div>
           </div>
         )}
