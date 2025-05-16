@@ -8,14 +8,14 @@ const TransactionEntryEditor = () => {
         <Label className="h6">Account</Label>
         <Input
           placeholder="Account or Merchant Name"
-          className="p mt-2 border py-2 px-4 outline-none data-[focus]:border-blue-500"
+          className="p mt-2 border py-2 px-4 outline-hidden data-focus:border-blue-500"
         />
       </Field>
       <Field className="flex flex-col">
         <Label className="h6">Date</Label>
         <Input
           placeholder="YYYY-MM-DD"
-          className="p mt-2 border py-2 px-4 outline-none data-[focus]:border-blue-500"
+          className="p mt-2 border py-2 px-4 outline-hidden data-focus:border-blue-500"
         />
       </Field>
       <Field className="flex flex-col basis-1/6">
@@ -23,7 +23,7 @@ const TransactionEntryEditor = () => {
         <Input
           type="number"
           placeholder="USD"
-          className="p mt-2 border py-2 px-4 outline-none data-[focus]:border-blue-500"
+          className="p mt-2 border py-2 px-4 outline-hidden data-focus:border-blue-500"
         />
       </Field>
       <Field>

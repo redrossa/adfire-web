@@ -41,12 +41,12 @@ export default function ThemeToggle() {
         aria-label="Toggle dark mode"
       />
       <label
-        className="text-muted-foreground hover:text-foreground/80 peer-focus-visible:border-ring peer-focus-visible:ring-ring/50 relative inline-flex size-9 cursor-pointer items-center justify-center rounded transition-[color,box-shadow] outline-none peer-focus-visible:ring-[3px]"
+        className="text-muted-foreground hover:text-foreground/80 peer-focus-visible:border-ring peer-focus-visible:ring-ring/50 relative inline-flex size-9 cursor-pointer items-center justify-center rounded transition-[color,box-shadow] outline-hidden peer-focus-visible:ring-[3px]"
         htmlFor={id}
         aria-hidden="true"
       >
-        <SunIcon className="dark:hidden" size={20} aria-hidden="true" />
-        <MoonIcon className="hidden dark:block" size={20} aria-hidden="true" />
+        <MoonIcon className="dark:hidden" size={20} aria-hidden="true" />
+        <SunIcon className="hidden dark:block" size={20} aria-hidden="true" />
         <span className="sr-only">Switch to system/light/dark version</span>
       </label>
     </div>

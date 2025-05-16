@@ -20,7 +20,7 @@ const Landing = () => {
         <Button type="submit" className="group">
           Sign In
           <ArrowRightIcon
-            className="-me-1 transition-transform group-hover:translate-x-0.5"
+            className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
             size={16}
             aria-hidden
           />

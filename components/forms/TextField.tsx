@@ -20,7 +20,7 @@ const TextField = ({
     {description && <Description className="p">{description}</Description>}
     <Input
       placeholder={placeholder}
-      className="p border py-2 px-4 outline-none data-[focus]:border-blue-500 data-[invalid]:border-red-500"
+      className="p border py-2 px-4 outline-hidden data-focus:border-blue-500 data-invalid:border-red-500"
       invalid={!!error}
       {...props}
     />

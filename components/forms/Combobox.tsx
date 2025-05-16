@@ -58,12 +58,12 @@ const Combobox = <T extends ComboboxOption>({
       />
       <ComboboxOptions
         anchor="bottom start"
-        className="w-[--input-width] border empty:invisible rounded-sm"
+        className="w-(--input-width) border empty:invisible rounded-sm"
       >
         {allowCustom && query.length > 0 && filtered.length === 0 && (
           <ComboboxOption
             value={{ key: query } satisfies ComboboxOption}
-            className="group flex gap-2 px-4 py-2 bg-white data-[focus]:bg-gray-100 cursor-pointer"
+            className="group flex gap-2 px-4 py-2 bg-white data-focus:bg-gray-100 cursor-pointer"
           >
             {children(query)}
           </ComboboxOption>
@@ -72,7 +72,7 @@ const Combobox = <T extends ComboboxOption>({
           <ComboboxOption
             key={o.key}
             value={o}
-            className="group flex gap-2 px-4 py-2 bg-white data-[focus]:bg-gray-100 cursor-pointer"
+            className="group flex gap-2 px-4 py-2 bg-white data-focus:bg-gray-100 cursor-pointer"
           >
             {children(o)}
           </ComboboxOption>

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { useIsMobile } from '@/hooks/useIsMobile';
 import Logo from '@/public/vercel.svg';
+import LightLogo from '@/public/vercel-light.svg';
 import { cn, getInitials } from '@/lib/utils';
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/avatar';
 import {
@@ -16,31 +17,24 @@ import { signOut, useSession } from 'next-auth/react';
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/dropdown-menu';
 import { ForwardRefExoticComponent } from 'react';
+import ThemeToggle from '@/components/theme-toggle';
 
-interface Link {
+interface NavLink {
   Icon: ForwardRefExoticComponent<any>;
   text: string;
-  href?: string;
-  onClick?: () => void;
-  variant?: 'default' | 'destructive';
+  href: string;
 }
 
-const navLinks: Link[] = [
+const navLinks: NavLink[] = [
   { Icon: ArrowLeftRightIcon, text: 'Transactions', href: '/transactions' },
   { Icon: LandmarkIcon, text: 'Accounts', href: '/accounts' },
-];
-
-const dropdownLinks: Link[] = [
-  {
-    Icon: LogOutIcon,
-    text: 'Sign out',
-    onClick: signOut,
-    variant: 'destructive',
-  },
 ];
 
 function Header() {
@@ -48,7 +42,7 @@ function Header() {
   const session = useSession();
 
   return (
-    <header className="before:bg-[linear-gradient(to_right,--theme(--color-border/.3),--theme(--color-border)_200px,--theme(--color-border)_calc(100%-200px),--theme(--color-border/.3))] relative before:absolute before:-inset-x-32 before:bottom-0 before:h-px">
+    <header className="before:bg-[linear-gradient(to_right,--theme(--color-border/.3),--theme(--color-border)_200px,--theme(--color-border)_calc(100%-200px),--theme(--color-border/.3))] relative mb-14 before:absolute before:-inset-x-32 before:bottom-0 before:h-px">
       <div
         className="before:bg-ring/50 after:bg-ring/50 before:absolute before:-bottom-px before:-left-12 before:z-10 before:-ml-px before:size-[3px] after:absolute after:-right-12 after:-bottom-px after:z-10 after:-mr-px after:size-[3px]"
         aria-hidden="true"
@@ -62,6 +56,15 @@ function Header() {
             width={24}
             height={24}
             priority={true}
+            className="dark:hidden"
+          />
+          <Image
+            src={LightLogo}
+            alt="Adfire Logo"
+            width={24}
+            height={24}
+            priority={true}
+            className="hidden dark:block"
           />
         </Link>
         {session.status === 'authenticated' && (
@@ -89,8 +92,8 @@ function Header() {
             <div className="flex items-center gap-1">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <button className="flex items-center gap-2">
-                    <Avatar>
+                  <button className="flex items-center gap-2 cursor-pointer">
+                    <Avatar className="select-none">
                       <AvatarImage
                         src={session.data.user?.image as string}
                         alt={session.data.user?.name as string}
@@ -110,26 +113,55 @@ function Header() {
                     )}
                   </button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="px-0 bg-background">
-                  {(isMobile ? navLinks : [])
-                    .concat(dropdownLinks)
-                    .map((link) => (
-                      <DropdownMenuItem
-                        className="cursor-pointer outline-none focus:underline"
-                        key={link.text}
-                        asChild
-                        variant={link.variant}
-                      >
-                        <HeaderLink
-                          text={link.text}
-                          href={link.href}
-                          Icon={link.Icon}
-                          onClick={link.onClick}
+                <DropdownMenuContent align="end" className="px-0">
+                  <DropdownMenuLabel className="flex min-w-0 flex-col">
+                    <span className="text-foreground truncate text-sm font-medium">
+                      {session.data.user?.name}
+                    </span>
+                    <small className="text-muted-foreground truncate text-xs font-normal">
+                      {session.data.user?.email}
+                    </small>
+                  </DropdownMenuLabel>
+                  {isMobile && (
+                    <>
+                      <DropdownMenuSeparator />
+                      <DropdownMenuGroup>
+                        {navLinks.map((link) => (
+                          <DropdownMenuItem
+                            key={link.href}
+                            className="cursor-pointer outline-hidden focus:underline"
+                            asChild
+                          >
+                            <HeaderLink
+                              text={link.text}
+                              href={link.href}
+                              Icon={link.Icon}
+                            />
+                          </DropdownMenuItem>
+                        ))}
+                      </DropdownMenuGroup>
+                    </>
+                  )}
+                  <DropdownMenuSeparator />
+                  <DropdownMenuGroup>
+                    <DropdownMenuItem
+                      className="cursor-pointer outline-hidden focus:underline"
+                      asChild
+                      variant="destructive"
+                    >
+                      <div onClick={() => signOut()}>
+                        <LogOutIcon
+                          className="opacity-60"
+                          size={16}
+                          aria-hidden
                         />
-                      </DropdownMenuItem>
-                    ))}
+                        <p>Sign out</p>
+                      </div>
+                    </DropdownMenuItem>
+                  </DropdownMenuGroup>
                 </DropdownMenuContent>
               </DropdownMenu>
+              <ThemeToggle />
             </div>
           </div>
         )}
@@ -142,20 +174,18 @@ function HeaderLink({
   text,
   Icon,
   href,
-  onClick,
   className,
   ...props
 }: {
   text: string;
   Icon?: ForwardRefExoticComponent<any>;
-  href?: string;
-  onClick?: () => void;
+  href: string;
   className?: string;
   [key: string]: any;
 }) {
-  return href ? (
+  return (
     <Link
-      href={href || ''}
+      href={href}
       className={cn(
         'flex items-center gap-0.5 text-sm hover:underline',
         className,
@@ -165,18 +195,6 @@ function HeaderLink({
       {Icon && <Icon size={16} aria-hidden />}
       <p>{text}</p>
     </Link>
-  ) : (
-    <div
-      className={cn(
-        'flex items-center gap-0.5 text-sm hover:underline',
-        className,
-      )}
-      onClick={onClick}
-      {...props}
-    >
-      {Icon && <Icon size={16} aria-hidden />}
-      <p>{text}</p>
-    </div>
   );
 }
 

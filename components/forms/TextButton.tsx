@@ -30,7 +30,7 @@ const TextButton = ({
         ${role === 'success' && 'active:text-green-600 text-green-500'}
         ${role === 'warning' && 'active:text-yellow-600 text-yellow-500'}
         ${role === 'alert' && 'active:text-red-600 text-red-500'}
-        data-[disabled]:text-neutral-500 
+        data-disabled:text-neutral-500 
         py-2 px-4 ${className}`}
     {...props}
   >
