@@ -1,26 +1,29 @@
 import { metadata } from '@/app/layout';
 import { signIn } from '@/auth';
-import { Button } from '@headlessui/react';
+import { Button } from '@/components/button';
+import { ArrowRightIcon } from 'lucide-react';
 
 const Landing = () => {
   return (
     <>
-      <h3 className="mt-24">{metadata.description}</h3>
-      <h4 className="my-10 font-light">
+      <h4 className="">{metadata.description}</h4>
+      <p className="mb-4">
         The platform to help you visualize your finances to achieve your FIRE
         goal.
-      </h4>
+      </p>
       <form
         action={async () => {
           'use server';
           await signIn('google');
         }}
       >
-        <Button
-          type="submit"
-          className="p inline-flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors bg-foreground font-medium text-background hover:bg-blue-600 py-2 px-4"
-        >
+        <Button type="submit" className="group">
           Sign In
+          <ArrowRightIcon
+            className="-me-1 transition-transform group-hover:translate-x-0.5"
+            size={16}
+            aria-hidden
+          />
         </Button>
       </form>
     </>

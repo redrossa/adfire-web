@@ -4,7 +4,7 @@ import Image from 'next/image';
 const Dashboard = async () => {
   const session = await auth();
   return (
-    <div className="container shadow-md p-16 flex items-center gap-16">
+    <div className="shadow-md p-16 flex items-center gap-16">
       <Image
         src={session?.user?.image as string}
         alt={session?.user?.name as string}
