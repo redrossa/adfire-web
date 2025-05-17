@@ -43,7 +43,9 @@ export default async function RootLayout({
               <div className="relative mx-auto w-full">
                 <div className="relative flex min-h-screen flex-col">
                   <Header />
-                  <main className="grow">{children}</main>
+                  <main className="grow w-full max-w-6xl mx-auto">
+                    {children}
+                  </main>
                   <Footer />
                 </div>
               </div>

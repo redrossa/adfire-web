@@ -1,27 +1,20 @@
 'use client';
 
-import {
-  CheckCircleIcon,
-  PlusIcon,
-  TrashIcon,
-  XCircleIcon,
-} from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
-import {
-  IconButton,
-  SolidButton,
-  TextButton,
-  TextField,
-} from '@/components/forms';
 import { useRouter } from 'next/navigation';
 import { Account, AccountUser } from '@/lib/models';
-import {
-  createAccount,
-  deleteAccount,
-  updateAccount,
-} from '@/lib/services';
+import { createAccount, deleteAccount, updateAccount } from '@/lib/services';
 import { Fragment } from 'react';
+import { Label } from '@/components/label';
+import { Input } from '@/components/input';
+import { Button } from '@/components/button';
+import {
+  CircleCheckIcon,
+  CircleXIcon,
+  PlusIcon,
+  Trash2Icon,
+} from 'lucide-react';
 
 const emptyUser: AccountUser = {
   name: '',
@@ -78,81 +71,136 @@ const AccountEditor = ({ account }: Props) => {
   };
 
   return (
-    <div className="container shadow-md p-16 bg-background">
-      <form onSubmit={handleSubmit(onSubmit)}>
-        <TextField
-          label="Account Name"
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <fieldset className="flex flex-col gap-2">
+        <Label htmlFor="name">
+          Account name <span className="text-destructive">*</span>
+        </Label>
+        <Input
+          id="name"
           placeholder="Chase Freedom Unlimited"
-          error={errors.name && 'Required'}
-          {...register('name', { required: true })}
+          className="peer"
+          aria-invalid={!!errors.name}
+          {...register('name', { required: 'Account name is required' })}
         />
-        <div className="mt-8 border-t border-foreground pt-8 grid grid-cols-[1fr_auto_auto] gap-y-2 gap-x-4">
-          <h6>Cardholder Name</h6>
-          <h6 className="col-span-2">Mask</h6>
-          {fields.map((field, index) => (
-            <Fragment key={index}>
-              <TextField
-                className="flex-1"
+        <small
+          className="hidden peer-aria-invalid:block peer-aria-invalid:text-destructive"
+          role="alert"
+          aria-live="polite"
+        >
+          {errors.name?.message || errors.name?.type}
+        </small>
+      </fieldset>
+      <div className="mt-8 border-t border-border pt-8 grid grid-cols-[1fr_auto_auto] gap-x-4 gap-y-2">
+        <Label>
+          Cardholder Name <span className="text-destructive">*</span>
+        </Label>
+        <Label className="col-span-2">
+          Mask <span className="text-destructive">*</span>
+        </Label>
+        {fields.map((field, index) => (
+          <Fragment key={field.id}>
+            <fieldset>
+              <Input
+                id={`users.${index}.name`}
                 placeholder="John Doe"
-                error={errors.users?.[index]?.name && 'Required'}
-                {...register(`users.${index}.name`, { required: true })}
+                className="peer"
+                aria-invalid={!!errors.users?.[index]?.name}
+                {...register(`users.${index}.name`, {
+                  required: 'Cardholder name is required',
+                })}
               />
-              <TextField
+              <p
+                className="hidden peer-aria-invalid:block peer-aria-invalid:text-destructive mt-2 text-xs"
+                role="alert"
+                aria-live="polite"
+              >
+                {errors.users?.[index]?.name?.message ||
+                  errors.users?.[index]?.name?.type}
+              </p>
+            </fieldset>
+            <fieldset>
+              <Input
+                id={`users.${index}.mask`}
                 placeholder="0000"
-                error={errors.users?.[index]?.mask && 'Required'}
-                {...register(`users.${index}.mask`, { required: true })}
+                className="peer"
+                aria-invalid={!!errors.users?.[index]?.mask}
+                {...register(`users.${index}.mask`, {
+                  required: 'Mask is required',
+                })}
               />
-              <IconButton
-                disabled={fields.length === 1}
-                onClick={() => remove(index)}
-                Icon={TrashIcon}
-              />
-            </Fragment>
-          ))}
-        </div>
-        <TextButton
-          Icon={PlusIcon}
-          className="mt-8"
-          text="Add users"
-          onClick={() => append(emptyUser)}
-        />
-        <div className="mt-8 flex items-center gap-2">
-          {account?.id && (
-            <TextButton
-              role="alert"
-              Icon={TrashIcon}
-              text="Delete"
-              onClick={() => onDelete(account.id!)}
-            />
-          )}
-          <TextButton
-            className="ml-auto"
-            text="Cancel"
-            as={Link}
-            href="/accounts"
-          />
-          <SolidButton disabled={isSubmitting} text="Save" type="submit" />
-        </div>
-        {errors.root && (
-          <small
-            role="alert"
-            className="mt-8 text-red-500 flex items-center gap-2"
+              <p
+                className="hidden peer-aria-invalid:block peer-aria-invalid:text-destructive mt-2 text-xs"
+                role="alert"
+                aria-live="polite"
+              >
+                {errors.users?.[index]?.mask?.message ||
+                  errors.users?.[index]?.mask?.type}
+              </p>
+            </fieldset>
+            <Button
+              type="button"
+              className="rounded-full"
+              variant="ghost"
+              size="icon"
+              aria-label={`Delete account user ${index}`}
+              onClick={() => remove(index)}
+              disabled={fields.length === 1}
+            >
+              <Trash2Icon className="opacity-60" size={16} aria-hidden="true" />
+            </Button>
+          </Fragment>
+        ))}
+      </div>
+      <Button
+        type="button"
+        variant="ghost"
+        className="mt-8"
+        onClick={() => append(emptyUser)}
+      >
+        <PlusIcon className="opacity-60" size={16} />
+        Add users
+      </Button>
+      <div className="mt-8 flex items-center gap-2">
+        {account?.id && (
+          <Button
+            type="button"
+            variant="destructive"
+            onClick={() => onDelete(account.id!)}
           >
-            <XCircleIcon className="inline-flex w-6 h-6" />
-            {errors.root.message}
-          </small>
+            <Trash2Icon className="opacity-60" size={16} />
+            Delete
+          </Button>
         )}
-        {isSubmitSuccessful && (
-          <small
-            role="alert"
-            className="mt-8 text-green-500 flex items-center gap-2"
-          >
-            <CheckCircleIcon className="inline-flex w-6 h-6" />
-            Account saved!
-          </small>
-        )}
-      </form>
-    </div>
+        <Button type="button" asChild variant="ghost" className="ml-auto">
+          <Link href="/accounts">Cancel</Link>
+        </Button>
+        <Button type="submit" disabled={isSubmitting}>
+          Save
+        </Button>
+        <input type="submit" className="hidden" />
+      </div>
+      {errors.root && (
+        <small
+          className="hidden peer-aria-invalid:block peer-aria-invalid:text-destructive"
+          role="alert"
+          aria-live="polite"
+        >
+          <CircleXIcon className="inline-flex w-6 h-6" />
+          {errors.root.message}
+        </small>
+      )}
+      {isSubmitSuccessful && (
+        <small
+          className="hidden peer-aria-invalid:block peer-aria-invalid:text-destructive"
+          role="alert"
+          aria-live="polite"
+        >
+          <CircleCheckIcon className="inline-flex w-6 h-6" />
+          Account saved!
+        </small>
+      )}
+    </form>
   );
 };
 

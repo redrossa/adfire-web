@@ -6,7 +6,7 @@ import { ArrowRightIcon } from 'lucide-react';
 const Landing = () => {
   return (
     <>
-      <h4 className="">{metadata.description}</h4>
+      <h4>{metadata.description}</h4>
       <p className="mb-4">
         The platform to help you visualize your finances to achieve your FIRE
         goal.

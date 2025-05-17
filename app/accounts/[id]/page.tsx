@@ -12,5 +12,10 @@ interface Props {
 export default async function EditAccountPage({ params }: Props) {
   const { id } = await params;
   const account = await getAccount(id);
-  return <AccountEditor account={account} />;
+  return (
+    <>
+      <h3 className="mb-4">Edit Account</h3>
+      <AccountEditor account={account} />
+    </>
+  );
 }
