@@ -73,9 +73,7 @@ const AccountEditor = ({ account }: Props) => {
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
       <fieldset className="flex flex-col gap-2">
-        <Label htmlFor="name">
-          Account name <span className="text-destructive">*</span>
-        </Label>
+        <Label htmlFor="name">Account name</Label>
         <Input
           id="name"
           placeholder="Chase Freedom Unlimited"
@@ -92,12 +90,8 @@ const AccountEditor = ({ account }: Props) => {
         </small>
       </fieldset>
       <div className="mt-8 border-t border-border pt-8 grid grid-cols-[1fr_auto_auto] gap-x-4 gap-y-2">
-        <Label>
-          Cardholder Name <span className="text-destructive">*</span>
-        </Label>
-        <Label className="col-span-2">
-          Mask <span className="text-destructive">*</span>
-        </Label>
+        <Label>Cardholder Name</Label>
+        <Label className="col-span-2">Mask</Label>
         {fields.map((field, index) => (
           <Fragment key={field.id}>
             <fieldset>
