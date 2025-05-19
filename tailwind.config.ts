@@ -1,3 +1,4 @@
+import { heroui } from '@heroui/theme';
 import type { Config } from 'tailwindcss';
 
 export default {
@@ -5,6 +6,7 @@ export default {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
+    './node_modules/@heroui/theme/dist/components/(avatar|button|divider|dropdown|input|link|user|ripple|spinner|menu|popover|form).js',
   ],
   theme: {
     extend: {
@@ -18,5 +20,15 @@ export default {
       },
     },
   },
-  plugins: [],
+  plugins: [
+    heroui({
+      layout: {
+        radius: {
+          small: '1px',
+          medium: '2px',
+          large: '4px',
+        },
+      },
+    }),
+  ],
 } satisfies Config;

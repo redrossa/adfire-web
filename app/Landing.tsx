@@ -1,15 +1,16 @@
 import { metadata } from '@/app/layout';
 import { signIn } from '@/auth';
-import { Button } from '@headlessui/react';
+import { Button } from '@heroui/button';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 const Landing = () => {
   return (
     <>
-      <h3 className="mt-24">{metadata.description}</h3>
-      <h4 className="my-10 font-light">
+      <h4>{metadata.description}</h4>
+      <p className="mb-4">
         The platform to help you visualize your finances to achieve your FIRE
         goal.
-      </h4>
+      </p>
       <form
         action={async () => {
           'use server';
@@ -18,7 +19,11 @@ const Landing = () => {
       >
         <Button
           type="submit"
-          className="p inline-flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors bg-foreground font-medium text-background hover:bg-blue-600 py-2 px-4"
+          color="primary"
+          endContent={
+            <ArrowRightIcon className="opacity-60 w-4 h-auto" aria-hidden />
+          }
+          disableRipple
         >
           Sign In
         </Button>
