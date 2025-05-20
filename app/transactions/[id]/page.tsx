@@ -1,7 +1,7 @@
-import AccountEditor from '@/app/accounts/AccountEditor';
-import { getAccount } from '@/lib/services';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import TransactionEditor from '@/app/transactions/TransactionEditor';
+import { getTransaction } from '@/lib/services/transactions';
 
 interface Params {
   id: string;
@@ -11,18 +11,18 @@ interface Props {
   params: Promise<Params>;
 }
 
-export default async function EditAccountPage({ params }: Props) {
+export default async function EditTransactionPage({ params }: Props) {
   const session = await auth();
   if (!session) {
     redirect('/');
   }
 
   const { id } = await params;
-  const account = await getAccount(id);
+  const transaction = await getTransaction(id);
   return (
     <>
       <h3 className="mb-4">Edit Account</h3>
-      <AccountEditor account={account} />
+      <TransactionEditor transaction={transaction} />
     </>
   );
 }

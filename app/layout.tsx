@@ -1,10 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import { Header } from '@/components/header';
+import Header from '@/components/Header';
 import { SessionProvider } from 'next-auth/react';
-import Footer from '@/components/footer';
-import { ThemeProvider } from '@/components/theme-provider';
+import Footer from '@/components/Footer';
+import { HeroUIProvider } from '@heroui/system';
+import { ThemeProvider } from 'next-themes';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,26 +33,28 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-[-0.25px] antialiased has-data-home:bg-zinc-50 dark:has-not-data-home:before:hidden dark:has-data-home:bg-zinc-950`}
       >
-        <ThemeProvider
-          attribute="class"
-          defaultTheme="system"
-          enableSystem
-          disableTransitionOnChange
-        >
+        <HeroUIProvider>
           <SessionProvider>
-            <div className="overflow-hidden px-4 supports-[overflow:clip]:overflow-clip sm:px-6">
-              <div className="relative mx-auto w-full">
-                <div className="relative flex min-h-screen flex-col">
-                  <Header />
-                  <main className="grow w-full max-w-6xl mx-auto">
-                    {children}
-                  </main>
-                  <Footer />
+            <ThemeProvider
+              attribute="class"
+              defaultTheme="system"
+              enableSystem
+              disableTransitionOnChange
+            >
+              <div className="overflow-hidden px-4 supports-[overflow:clip]:overflow-clip sm:px-6">
+                <div className="relative mx-auto w-full">
+                  <div className="relative flex min-h-screen flex-col">
+                    <Header />
+                    <main className="grow w-full max-w-6xl mx-auto">
+                      {children}
+                    </main>
+                    <Footer />
+                  </div>
                 </div>
               </div>
-            </div>
+            </ThemeProvider>
           </SessionProvider>
-        </ThemeProvider>
+        </HeroUIProvider>
       </body>
     </html>
   );

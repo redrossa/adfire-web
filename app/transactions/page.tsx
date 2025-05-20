@@ -1,65 +1,89 @@
-import { Button } from '@headlessui/react';
 import Link from 'next/link';
-import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
-
-interface Transaction {
-  id: string;
-  name: string;
-  date: string;
-  amount: number;
-  symbol: string;
-}
-
-async function getTransactions(): Promise<Transaction[]> {
-  const response = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL!}/transactions`,
-  );
-  if (!response.ok) {
-    throw new Error(response.statusText);
-  }
-  return await response.json();
-}
+import {
+  ChevronRightIcon,
+  PencilIcon,
+  PlusIcon,
+} from '@heroicons/react/24/outline';
+import { Button } from '@heroui/button';
+import { getTransactions } from '@/lib/services/transactions';
+import { auth } from '@/auth';
+import { redirect } from 'next/navigation';
+import { Chip } from '@heroui/chip';
 
 export default async function TransactionsPage() {
-  const transactions = await getTransactions();
+  const session = await auth();
+  if (!session) {
+    redirect('/');
+  }
+
+  let transactions;
+  try {
+    transactions = await getTransactions();
+  } catch {
+    transactions = null;
+  }
+
   return (
-    <main>
+    <>
       <div className="flex items-center justify-between">
         <h3>Transactions</h3>
         <Button
           as={Link}
           href="/transactions/new"
-          className="inline-flex items-center gap-2 rounded-sm border border-solid border-transparent transition-colors bg-foreground font-medium text-background hover:bg-blue-600 py-2 px-4"
+          color="primary"
+          disableRipple
+          startContent={
+            <PlusIcon className="opacity-60 w-4 h-auto" aria-hidden />
+          }
         >
-          <PlusIcon className="w-6 h-6" />
-          <p>Add transactions</p>
+          Add transactions
         </Button>
       </div>
-      <section className="my-10">
-        {!transactions.length ? (
-          <p>
-            You have no transactions on file. Add a transaction to view your
-            portfolio summary.
-          </p>
+      <section className="mt-4">
+        {!transactions ? (
+          <p>Failed to load transactions</p>
         ) : (
-          <div className="container flex flex-col divide-y">
-            {transactions.map((transaction) => (
-              <div key={transaction.name} className="p-8 flex items-center">
-                <div className="flex flex-col">
-                  <h5>{transaction.name}</h5>
-                  <small>{transaction.date}</small>
-                </div>
-                <code className="ml-auto mr-2">
-                  {transaction.amount} {transaction.symbol}
-                </code>
-                <Button className="rounded-full hover:bg-gray-100 hover:text-inherit text-gray-700 transition p-4">
-                  <ChevronRightIcon className="w-8 h-8" />
-                </Button>
+          <>
+            {!transactions.length ? (
+              <p>
+                You have no transactions on file. Add a transaction to view your
+                portfolio summary.
+              </p>
+            ) : (
+              <div className="flex flex-col rounded-md">
+                {transactions.map((transaction) => (
+                  <div key={transaction.id} className="p-4 flex items-center">
+                    <div className="flex flex-col">
+                      <h5>{transaction.name}</h5>
+                      <small>{transaction.date}</small>
+                    </div>
+                    <div className="flex gap-2 items-center ml-auto">
+                      <Chip radius="md">
+                        <code>${transaction.amount}</code>
+                      </Chip>
+                      <Button
+                        disableRipple
+                        isIconOnly
+                        variant="light"
+                        radius="full"
+                        className="ml-auto"
+                        startContent={
+                          <ChevronRightIcon
+                            className="opacity-60 w-4 h-auto"
+                            aria-hidden
+                          />
+                        }
+                        as={Link}
+                        href={`/transactions/${transaction.id}`}
+                      />
+                    </div>
+                  </div>
+                ))}
               </div>
-            ))}
-          </div>
+            )}
+          </>
         )}
       </section>
-    </main>
+    </>
   );
 }

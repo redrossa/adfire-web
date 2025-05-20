@@ -1,7 +1,7 @@
 import { metadata } from '@/app/layout';
 import { signIn } from '@/auth';
-import { Button } from '@/components/button';
-import { ArrowRightIcon } from 'lucide-react';
+import { Button } from '@heroui/button';
+import { ArrowRightIcon } from '@heroicons/react/24/outline';
 
 const Landing = () => {
   return (
@@ -17,13 +17,15 @@ const Landing = () => {
           await signIn('google');
         }}
       >
-        <Button type="submit" className="group">
+        <Button
+          type="submit"
+          color="primary"
+          endContent={
+            <ArrowRightIcon className="opacity-60 w-4 h-auto" aria-hidden />
+          }
+          disableRipple
+        >
           Sign In
-          <ArrowRightIcon
-            className="-me-1 opacity-60 transition-transform group-hover:translate-x-0.5"
-            size={16}
-            aria-hidden
-          />
         </Button>
       </form>
     </>
