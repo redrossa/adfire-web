@@ -1,14 +1,11 @@
 import Link from 'next/link';
-import {
-  ChevronRightIcon,
-  PencilIcon,
-  PlusIcon,
-} from '@heroicons/react/24/outline';
+import { ChevronRightIcon, PlusIcon } from '@heroicons/react/24/outline';
 import { Button } from '@heroui/button';
 import { getTransactions } from '@/lib/services/transactions';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { Chip } from '@heroui/chip';
+import { dayjs } from '@/lib/utils';
 
 export default async function TransactionsPage() {
   const session = await auth();
@@ -52,10 +49,13 @@ export default async function TransactionsPage() {
             ) : (
               <div className="flex flex-col rounded-md">
                 {transactions.map((transaction) => (
-                  <div key={transaction.id} className="p-4 flex items-center">
+                  <div
+                    key={transaction.id}
+                    className="p-4 flex items-center hover:bg-default/20"
+                  >
                     <div className="flex flex-col">
                       <h5>{transaction.name}</h5>
-                      <small>{transaction.date}</small>
+                      <small>{dayjs(transaction.date).fromNow()}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <Chip radius="md">
