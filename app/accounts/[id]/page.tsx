@@ -21,7 +21,7 @@ export default async function EditAccountPage({ params }: Props) {
   const account = await getAccount(id);
   return (
     <>
-      <h3 className="mb-4">Edit Account</h3>
+      <h3 className="mb-8">Edit Account</h3>
       <AccountEditor account={account} />
     </>
   );

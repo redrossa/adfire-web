@@ -21,7 +21,7 @@ export default async function EditTransactionPage({ params }: Props) {
   const transaction = await getTransaction(id);
   return (
     <>
-      <h3 className="mb-4">Edit Account</h3>
+      <h3 className="mb-8">Edit Account</h3>
       <TransactionEditor transaction={transaction} />
     </>
   );
