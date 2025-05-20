@@ -1,6 +1,5 @@
 import { PencilIcon, PlusIcon } from '@heroicons/react/24/outline';
 import Link from 'next/link';
-import { IconButton } from '@/components/forms';
 import { getAccounts } from '@/lib/services';
 import { Button } from '@heroui/button';
 import { auth } from '@/auth';
@@ -13,7 +12,6 @@ export default async function AccountsPage() {
   }
 
   let accounts;
-
   try {
     accounts = await getAccounts();
   } catch {
@@ -25,12 +23,15 @@ export default async function AccountsPage() {
       <div className="flex items-center justify-between">
         <h3>Accounts</h3>
         <Button
+          as={Link}
+          href="/accounts/new"
+          color="primary"
           disableRipple
           startContent={
             <PlusIcon className="opacity-60 w-4 h-auto" aria-hidden />
           }
         >
-          <Link href="/accounts/new">Add accounts</Link>
+          Add accounts
         </Button>
       </div>
       <section className="mt-4">
