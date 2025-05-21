@@ -20,6 +20,11 @@ export default async function TransactionsPage() {
     transactions = null;
   }
 
+  const formatter = Intl.NumberFormat(undefined, {
+    style: 'currency',
+    currency: 'USD',
+  });
+
   return (
     <>
       <div className="flex items-center justify-between">
@@ -58,8 +63,8 @@ export default async function TransactionsPage() {
                       <small>{dayjs(transaction.date).fromNow()}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
-                      <Chip radius="md">
-                        <code>${transaction.amount}</code>
+                      <Chip radius="md" size="lg">
+                        <code>{formatter.format(transaction.amount)}</code>
                       </Chip>
                       <Button
                         disableRipple
