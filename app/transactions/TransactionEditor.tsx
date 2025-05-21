@@ -365,18 +365,17 @@ const AccountSelector = ({
     name,
     rules: { required: 'Account is required' },
   });
-  const grouped = Object.entries(
-    Object.groupBy(options, (o) =>
-      o.isMerchant ? 'Past Merchants' : 'Your Accounts',
-    ),
-  );
+  const grouped = {
+    'Your accounts': options.filter((o) => !o.isMerchant),
+    'Past merchants': options.filter((o) => o.isMerchant),
+  };
   return (
     <Autocomplete
       isClearable={false}
       aria-label="Account selector"
       allowsCustomValue
       variant="faded"
-      defaultItems={grouped}
+      defaultItems={Object.entries(grouped)}
       placeholder="Select an account or enter a new merchant"
       onSelectionChange={field.onChange}
       onBlur={field.onBlur}
