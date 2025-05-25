@@ -60,11 +60,7 @@ const Chart = ({ data }: Props) => {
         >
           <XAxis dataKey="date" display="none" />
           <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
-          <ReferenceLine
-            y={data[0].amount}
-            stroke="#a1a1aa"
-            strokeDasharray="3 3"
-          />
+          <ReferenceLine y={data[0].amount} strokeDasharray="3 3" />
           <Line
             dataKey="cumulative"
             stroke={latest.cumulative >= 0 ? SUCCESS_COLOR : DANGER_COLOR}
