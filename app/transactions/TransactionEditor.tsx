@@ -53,7 +53,7 @@ interface Props {
 const emptyEntry: TransactionEntryForm = {
   account: null,
   date: '',
-  amount: '' as any,
+  amount: null as any,
 };
 
 const mapToTransaction = (
