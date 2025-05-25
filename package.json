@@ -14,6 +14,7 @@
     "@heroui/autocomplete": "^2.3.20",
     "@heroui/avatar": "^2.2.15",
     "@heroui/button": "^2.2.19",
+    "@heroui/card": "^2.2.18",
     "@heroui/chip": "^2.2.15",
     "@heroui/date-picker": "^2.3.19",
     "@heroui/divider": "^2.2.13",
@@ -24,15 +25,17 @@
     "@heroui/system": "^2.4.15",
     "@heroui/theme": "^2.4.15",
     "@heroui/user": "^2.2.15",
+    "@number-flow/react": "^0.5.9",
     "@prisma/client": "^6.7.0",
     "dayjs": "^1.11.13",
-    "framer-motion": "^12.12.1",
+    "framer-motion": "^12.12.2",
     "next": "15.2.4",
     "next-auth": "^5.0.0-beta.25",
     "next-themes": "^0.4.6",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
-    "react-hook-form": "^7.56.1"
+    "react-hook-form": "^7.56.1",
+    "recharts": "^2.15.3"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",

@@ -2,8 +2,10 @@ import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import dayjs from 'dayjs';
 import relativeTime from 'dayjs/plugin/relativeTime';
+import localizedFormat from 'dayjs/plugin/localizedFormat';
 
 dayjs.extend(relativeTime);
+dayjs.extend(localizedFormat);
 
 export { dayjs };
 
@@ -22,3 +24,8 @@ export function getInitials(name: string) {
   }
   return initials;
 }
+
+export const dollarFormatter = Intl.NumberFormat(undefined, {
+  style: 'currency',
+  currency: 'USD',
+});

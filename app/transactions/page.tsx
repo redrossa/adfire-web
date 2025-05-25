@@ -5,7 +5,7 @@ import { getTransactions } from '@/lib/services/transactions';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { Chip } from '@heroui/chip';
-import { dayjs } from '@/lib/utils';
+import { dayjs, dollarFormatter } from '@/lib/utils';
 
 export default async function TransactionsPage() {
   const session = await auth();
@@ -19,11 +19,6 @@ export default async function TransactionsPage() {
   } catch {
     transactions = null;
   }
-
-  const formatter = Intl.NumberFormat(undefined, {
-    style: 'currency',
-    currency: 'USD',
-  });
 
   return (
     <>
@@ -64,7 +59,9 @@ export default async function TransactionsPage() {
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <Chip radius="md" size="lg">
-                        <code>{formatter.format(transaction.amount!)}</code>
+                        <code>
+                          {dollarFormatter.format(transaction.amount!)}
+                        </code>
                       </Chip>
                       <Button
                         disableRipple

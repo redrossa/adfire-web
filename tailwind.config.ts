@@ -6,7 +6,7 @@ export default {
     './pages/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './app/**/*.{js,ts,jsx,tsx,mdx}',
-    './node_modules/@heroui/theme/dist/components/(autocomplete|avatar|button|chip|date-picker|divider|dropdown|input|link|number-input|user|ripple|spinner|form|listbox|popover|scroll-shadow|calendar|date-input|menu).js',
+    './node_modules/@heroui/theme/dist/components/(autocomplete|avatar|button|card|chip|date-picker|divider|dropdown|input|link|number-input|user|ripple|spinner|form|listbox|popover|scroll-shadow|calendar|date-input|menu).js',
   ],
   theme: {
     extend: {

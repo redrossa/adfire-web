@@ -70,16 +70,14 @@ const Header = () => {
         <NextLink className="shrink-0" href="/" aria-label="Home">
           <span className="sr-only">Adfire</span>
           <Image
-            src={Logo}
+            src={
+              (theme === 'system' && prefersDarkScheme) || theme === 'dark'
+                ? LightLogo
+                : Logo
+            }
             alt="Adfire Logo"
             priority={true}
             className="h-6 w-auto"
-          />
-          <Image
-            src={LightLogo}
-            alt="Adfire Logo"
-            priority={true}
-            className="hidden dark:block h-6 w-auto"
           />
         </NextLink>
         {session.status === 'authenticated' && (
@@ -109,7 +107,7 @@ const Header = () => {
                 >
                   <Avatar
                     showFallback
-                    name={getInitials(session.data.user?.name || '')}
+                    name={getInitials(session.data.user?.name ?? '')}
                     src={session.data.user?.image as string}
                     alt={session.data.user?.name as string}
                   ></Avatar>
