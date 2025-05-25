@@ -8,78 +8,95 @@ import {
 } from '@heroicons/react/24/outline';
 import Link from 'next/link';
 import {
-  Control,
   Controller,
   SubmitHandler,
-  useController,
-  UseControllerProps,
   useFieldArray,
   useForm,
 } from 'react-hook-form';
-import {
-  Account,
-  AccountUser,
-  Transaction,
-  TransactionEntry,
-} from '@/lib/models';
 import { Fragment, useEffect, useState } from 'react';
-import { getAccounts } from '@/lib/services';
+import { createMerchant, getAccounts } from '@/lib/services';
 import { Input } from '@heroui/input';
 import { Button } from '@heroui/button';
-import {
-  Autocomplete,
-  AutocompleteItem,
-  AutocompleteSection,
-} from '@heroui/autocomplete';
 import { cn } from '@/lib/utils';
-import { DatePicker } from '@heroui/date-picker';
-import { NumberInput } from '@heroui/number-input';
-import { parseDate } from '@internationalized/date';
 import {
   createTransaction,
   deleteTransaction,
   updateTransaction,
 } from '@/lib/services/transactions';
 import { useRouter } from 'next/navigation';
+import { Transaction } from '@/lib/models';
+import AccountSelector, {
+  AccountOption,
+  mapToAccountOptions,
+} from '../../components/AccountSelector';
+import DateField from '@/components/DateField';
+import DollarField from '@/components/DollarField';
 
-const emptyEntry: TransactionEntry = {
-  accountUserId: '',
+export interface TransactionEntryForm {
+  id?: string;
+  account: AccountOption | null;
+  date: string;
+  amount: number;
+}
+
+export interface TransactionForm {
+  id?: string;
+  name: string;
+  debits: TransactionEntryForm[];
+  credits: TransactionEntryForm[];
+}
+
+interface Props {
+  transactionForm?: TransactionForm;
+}
+
+const emptyEntry: TransactionEntryForm = {
+  account: null,
   date: '',
   amount: '' as any,
 };
 
-interface AccountOption {
-  accountName: Account['name'];
-  isMerchant: Account['isMerchant'];
-  userName: AccountUser['name'];
-  mask: AccountUser['mask'];
-  id: AccountUser['id'];
-  key: string;
-}
+const mapToTransaction = (
+  transactionForm: TransactionForm,
+  accountOptions: { [key: string]: AccountOption },
+): Transaction => {
+  return {
+    id: transactionForm.id,
+    name: transactionForm.name,
+    debits: transactionForm.debits.map((e) => ({
+      id: e.id,
+      accountUserId:
+        e.account?.text && e.account.text in accountOptions
+          ? accountOptions[e.account.text].userId
+          : null,
+      amount: e.amount,
+      date: e.date,
+    })),
+    credits: transactionForm.credits.map((e) => ({
+      id: e.id,
+      accountUserId:
+        e.account?.text && e.account.text in accountOptions
+          ? accountOptions[e.account.text].userId
+          : null,
+      amount: e.amount,
+      date: e.date,
+    })),
+  };
+};
 
-interface Props {
-  transaction?: Transaction;
-}
-
-const TransactionEditor = ({ transaction }: Props) => {
+const TransactionEditor = ({ transactionForm }: Props) => {
   const router = useRouter();
   const [accountOptions, setAccountOptions] = useState<AccountOption[]>([]);
 
   const {
-    register,
     control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting, isSubmitSuccessful },
-  } = useForm<Transaction>({
-    defaultValues: !transaction
-      ? {
-          debits: [emptyEntry],
-          credits: [emptyEntry],
-        }
-      : {
-          ...transaction,
-        },
+  } = useForm<TransactionForm>({
+    defaultValues: !transactionForm
+      ? { debits: [emptyEntry], credits: [emptyEntry] }
+      : { ...transactionForm },
   });
 
   const {
@@ -100,12 +117,40 @@ const TransactionEditor = ({ transaction }: Props) => {
     name: 'credits',
   });
 
-  const onSubmit: SubmitHandler<Transaction> = async (data) => {
-    const isNew = !transaction?.id;
+  const onSubmit: SubmitHandler<TransactionForm> = async (data) => {
+    const isNew = !transactionForm?.id;
     const service = isNew ? createTransaction : updateTransaction;
 
+    const accountOptionsGroup = Object.groupBy(
+      data.debits
+        .concat(data.credits)
+        .map((o) => o.account)
+        .filter((a) => !!a),
+      (a) => a?.text,
+    );
+
+    const accountOptions: { [key: string]: AccountOption } = {};
+
+    for (const [key, options] of Object.entries(accountOptionsGroup)) {
+      const found = options?.find((o) => !o.isNew);
+      if (found) {
+        accountOptions[key] = found;
+        continue;
+      }
+
+      try {
+        const newAccount = await createMerchant(key);
+        accountOptions[key] = mapToAccountOptions(newAccount)[0];
+      } catch (err) {
+        setError('root', { message: (err as Error).message });
+        return;
+      }
+    }
+
+    const transaction: Transaction = mapToTransaction(data, accountOptions);
+
     try {
-      await service(data);
+      await service(transaction);
       router.push('/transactions');
     } catch (err) {
       setError('root', { message: (err as Error).message });
@@ -123,36 +168,34 @@ const TransactionEditor = ({ transaction }: Props) => {
 
   useEffect(() => {
     getAccounts(true).then((accounts) => {
-      setAccountOptions(
-        accounts.flatMap((a) =>
-          a.users.map((u) => ({
-            accountName: a.name,
-            isMerchant: a.isMerchant,
-            mask: u.mask,
-            userName: u.name,
-            id: u.id,
-            key: !a.isMerchant ? `${a.name}#${u.mask}` : a.name,
-          })),
-        ),
-      );
+      setAccountOptions(accounts.flatMap((a) => mapToAccountOptions(a)));
     });
   }, []);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        variant="faded"
-        label="Transaction Name"
-        labelPlacement="outside"
-        placeholder="Groceries"
-        classNames={{
-          label: 'h6',
-          input: `p`,
-        }}
-        isInvalid={!!errors.name}
-        color={!!errors.name ? 'danger' : 'default'}
-        errorMessage={errors.name?.message}
-        {...register('name', { required: 'Name is required' })}
+      <Controller
+        name="name"
+        control={control}
+        rules={{ required: 'Name is required' }}
+        render={({ field }) => (
+          <Input
+            value={field.value}
+            onValueChange={field.onChange}
+            onBlur={field.onBlur}
+            variant="faded"
+            label="Transaction Name"
+            labelPlacement="outside"
+            placeholder="Groceries"
+            classNames={{
+              label: 'h6',
+              input: `p`,
+            }}
+            isInvalid={!!errors.name}
+            color={errors.name ? 'danger' : 'default'}
+            errorMessage={errors.name?.message}
+          />
+        )}
       />
       <div className="mt-8 flex items-center gap-4">
         <h6>From</h6>
@@ -161,7 +204,7 @@ const TransactionEditor = ({ transaction }: Props) => {
       <div className="mt-8 grid grid-cols-[3fr_1fr_1fr_auto] gap-y-2 gap-x-4">
         <h6
           className={cn({
-            'text-danger': errors.debits?.some?.((u) => u?.accountUserId),
+            'text-danger': errors.debits?.some?.((u) => u?.account),
           })}
         >
           Account
@@ -185,9 +228,9 @@ const TransactionEditor = ({ transaction }: Props) => {
             <AccountSelector
               options={accountOptions}
               control={control}
-              name={`debits.${index}.accountUserId`}
+              name={`debits.${index}.account`}
               rules={{ required: 'Account is required' }}
-              errorMessage={errors?.debits?.[index]?.accountUserId?.message}
+              errorMessage={errors?.debits?.[index]?.account?.message}
             />
             <DateField
               control={control}
@@ -231,7 +274,7 @@ const TransactionEditor = ({ transaction }: Props) => {
       <div className="mt-8 grid grid-cols-[3fr_1fr_1fr_auto] gap-y-2 gap-x-4">
         <h6
           className={cn({
-            'text-danger': errors.credits?.some?.((u) => u?.accountUserId),
+            'text-danger': errors.credits?.some?.((u) => u?.account),
           })}
         >
           Account
@@ -255,8 +298,8 @@ const TransactionEditor = ({ transaction }: Props) => {
             <AccountSelector
               options={accountOptions}
               control={control}
-              name={`credits.${index}.accountUserId`}
-              errorMessage={errors?.credits?.[index]?.accountUserId?.message}
+              name={`credits.${index}.account`}
+              errorMessage={errors?.credits?.[index]?.account?.message}
             />
             <DateField
               control={control}
@@ -294,7 +337,7 @@ const TransactionEditor = ({ transaction }: Props) => {
         Add credits
       </Button>
       <div className="w-full mt-8 flex items-center gap-2">
-        {transaction?.id && (
+        {transactionForm?.id && (
           <Button
             disableRipple
             variant="bordered"
@@ -302,7 +345,7 @@ const TransactionEditor = ({ transaction }: Props) => {
             startContent={
               <TrashIcon className="opacity-60 w-4 h-auto" aria-hidden />
             }
-            onPress={() => onDelete(transaction.id!)}
+            onPress={() => onDelete(transactionForm.id!)}
           >
             Delete
           </Button>
@@ -344,142 +387,6 @@ const TransactionEditor = ({ transaction }: Props) => {
         </small>
       )}
     </form>
-  );
-};
-
-interface AccountSelectorProps extends UseControllerProps<any> {
-  options: AccountOption[];
-  control: Control<any>;
-  name: string;
-  errorMessage?: string;
-}
-
-const AccountSelector = ({
-  options,
-  control,
-  name,
-  errorMessage,
-}: AccountSelectorProps) => {
-  const { field } = useController({
-    control,
-    name,
-    rules: { required: 'Account is required' },
-  });
-  const grouped = {
-    'Your accounts': options.filter((o) => !o.isMerchant),
-    'Past merchants': options.filter((o) => o.isMerchant),
-  };
-  return (
-    <Autocomplete
-      isClearable={false}
-      aria-label="Account selector"
-      allowsCustomValue
-      variant="faded"
-      defaultItems={Object.entries(grouped)}
-      placeholder="Select an account or enter a new merchant"
-      onSelectionChange={field.onChange}
-      onBlur={field.onBlur}
-      selectedKey={field.value}
-      errorMessage={errorMessage}
-      isInvalid={!!errorMessage}
-      inputProps={{
-        classNames: { input: 'p' },
-      }}
-      selectorButtonProps={{
-        disableRipple: true,
-      }}
-    >
-      {([groupName, options]) => (
-        <AutocompleteSection title={groupName} key={groupName}>
-          {options.map((o) => (
-            <AutocompleteItem key={o.id} textValue={o.key}>
-              <div>
-                <p>
-                  {o.accountName}
-                  {!o.isMerchant && (
-                    <code className="opacity-60">#{o.mask}</code>
-                  )}
-                </p>
-                {!o.isMerchant && (
-                  <small className="opacity-60">{o.userName}</small>
-                )}
-              </div>
-            </AutocompleteItem>
-          ))}
-        </AutocompleteSection>
-      )}
-    </Autocomplete>
-  );
-};
-
-interface DateFieldProps extends UseControllerProps<any> {
-  control: Control<any>;
-  name: string;
-  errorMessage?: string;
-}
-
-const DateField = ({ control, name, errorMessage }: DateFieldProps) => {
-  return (
-    <Controller
-      name={name}
-      control={control}
-      rules={{
-        required: 'Date is required',
-      }}
-      render={({ field }) => (
-        <DatePicker
-          aria-label="Date picker"
-          variant="faded"
-          value={field.value ? parseDate(field.value) : null}
-          onChange={(v) => {
-            field.onChange(v?.toString());
-          }}
-          onBlur={field.onBlur}
-          isInvalid={!!errorMessage}
-          errorMessage={errorMessage}
-          selectorButtonProps={{
-            disableRipple: true,
-          }}
-        />
-      )}
-    />
-  );
-};
-
-interface DollarFieldProps extends UseControllerProps<any> {
-  control: Control<any>;
-  name: string;
-  errorMessage?: string;
-}
-
-const DollarField = ({ control, name, errorMessage }: DollarFieldProps) => {
-  return (
-    <Controller
-      name={name}
-      control={control}
-      rules={{
-        required: 'Amount is required',
-      }}
-      render={({ field }) => (
-        <NumberInput
-          aria-label="Amount in USD"
-          variant="faded"
-          placeholder="USD"
-          formatOptions={{
-            style: 'currency',
-            currency: 'USD',
-          }}
-          classNames={{
-            inputWrapper: 'py-0 px-3 h-10',
-          }}
-          value={field.value || null}
-          onValueChange={field.onChange}
-          onBlur={field.onBlur}
-          isInvalid={!!errorMessage}
-          errorMessage={errorMessage}
-        />
-      )}
-    />
   );
 };
 

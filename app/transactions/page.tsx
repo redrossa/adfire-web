@@ -64,7 +64,7 @@ export default async function TransactionsPage() {
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <Chip radius="md" size="lg">
-                        <code>{formatter.format(transaction.amount)}</code>
+                        <code>{formatter.format(transaction.amount!)}</code>
                       </Chip>
                       <Button
                         disableRipple

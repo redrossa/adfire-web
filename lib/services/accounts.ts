@@ -85,3 +85,16 @@ export async function updateAccount(account: Account): Promise<Account> {
 
   return await handleResponse(res);
 }
+
+export async function createMerchant(name: string): Promise<Account> {
+  return createAccount({
+    isMerchant: true,
+    name,
+    users: [
+      {
+        name,
+        mask: '🛒',
+      },
+    ],
+  });
+}
