@@ -55,7 +55,7 @@ export default async function TransactionsPage() {
                   >
                     <div className="flex flex-col">
                       <h5>{transaction.name}</h5>
-                      <small>{dayjs(transaction.date).fromNow()}</small>
+                      <small>{dayjs(transaction.date).format('LL')}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <Chip radius="md" size="lg">
