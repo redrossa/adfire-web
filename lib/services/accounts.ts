@@ -1,6 +1,6 @@
 'use server';
 
-import { Account } from '../models';
+import { Account, AccountBalance } from '../models';
 import { cookies } from 'next/headers';
 import { handleResponse } from '@/lib/services/utils';
 
@@ -97,4 +97,27 @@ export async function createMerchant(name: string): Promise<Account> {
       },
     ],
   });
+}
+
+export async function getAccountBalance(id: string): Promise<AccountBalance> {
+  const cookieStore = await cookies();
+
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}/balance`,
+    {
+      method: 'GET',
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+        Cookie: cookieStore.toString(),
+      },
+    },
+  );
+
+  if (!res.ok) {
+    console.error(res);
+    throw new Error();
+  }
+
+  return res.json();
 }

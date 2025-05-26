@@ -169,7 +169,7 @@ const TransactionEditor = ({ transactionForm }: Props) => {
   const initData = async () => {
     let accountOptions: AccountOption[];
     try {
-      const accounts = await getAccounts();
+      const accounts = await getAccounts(true);
       accountOptions = accounts.flatMap((a) => mapToAccountOptions(a));
     } catch {
       accountOptions = [];
