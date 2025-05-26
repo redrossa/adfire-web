@@ -4,20 +4,14 @@
 
 :root {
   --background: #ffffff;
-  --foreground: #171717;
+  --foreground: oklch(14.1% 0.005 285.823);
   --font-stack-sans: 'Helvetica Neue', Helvetica, Arial, sans-serif;
   --font-stack-code: 'Source Code Pro', monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    /*--background: #0a0a0a;*/
-    /*--foreground: #ededed;*/
-  }
-}
-
-html {
-  font-size: 62.5%;
+.dark {
+  --background: oklch(14.1% 0.005 285.823);
+  --foreground: oklch(98.5% 0 0);
 }
 
 body {
@@ -25,64 +19,66 @@ body {
   background: var(--background);
 }
 
-h1 {
-  font-size: 6rem;
-  font-weight: 800;
+h1,
+.h1 {
+  @apply text-6xl font-extrabold;
   line-height: 1.2;
 }
 
-h2 {
-  font-size: 3.6rem;
-  font-weight: 800;
+h2,
+.h2 {
+  @apply text-4xl font-extrabold;
   line-height: 1.33;
 }
 
-h3 {
-  font-size: 3.6rem;
+h3,
+.h3 {
+  @apply text-4xl font-bold;
   line-height: 1.33;
-  font-weight: normal;
 }
 
-h4 {
-  font-size: 2.4rem;
+h4,
+.h4 {
+  @apply text-2xl font-bold;
   line-height: 1.33;
-  font-weight: normal;
 }
 
-h5 {
-  font-size: 1.6rem;
-  font-weight: 600;
+h5,
+.h5 {
+  @apply text-base font-semibold;
   line-height: 1.5;
 }
 
-h6 {
-  font-size: 1.4rem;
-  line-height: 1.33;
+h6,
+.h6 {
+  @apply text-sm font-bold;
   letter-spacing: 1px;
-  font-weight: bold;
+  line-height: 1.33;
   text-transform: uppercase;
 }
 
-p {
-  font-size: 1.6rem;
+p,
+.p {
+  @apply text-base;
   line-height: 1.5;
   /*color: var(--color-text-default-contrast);*/
 }
 
-a {
+a,
+.a {
   /*color: var(--color-text-high-contrast);*/
   text-decoration: none;
 }
 
-small {
-  font-size: 1.2rem;
+small,
+.small {
+  @apply text-xs;
   line-height: 1.33;
-  letter-spacing: 0.25px;
 }
 
-code {
-  @apply font-mono;
-  font-size: 1.4rem;
+code,
+.code {
+  @apply font-mono text-sm;
   white-space: pre-wrap;
   word-break: break-word;
   /*background-color: var(--color-fill-bg-secondary);*/
