@@ -38,7 +38,7 @@ const navLinks: NavLink[] = [
   { Icon: BuildingLibraryIcon, text: 'Accounts', href: '/accounts' },
 ];
 
-const Headers = () => {
+const Header = () => {
   const isMobile = useIsMobile();
   const session = useSession();
   const { theme, setTheme } = useTheme();
@@ -184,4 +184,4 @@ const Headers = () => {
   );
 };
 
-export default Headers;
+export default Header;
