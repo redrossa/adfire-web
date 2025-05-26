@@ -8,6 +8,7 @@ import {
   Tooltip as TooltipRC,
   TooltipProps,
   XAxis,
+  YAxis,
 } from 'recharts';
 import { TimeSeriesPoint } from '@/lib/models/balance';
 import { Card, CardBody } from '@heroui/card';
@@ -16,20 +17,25 @@ import {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import { dayjs, dollarFormatter } from '@/lib/utils';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import NumberFlow from '@number-flow/react';
+import { useTheme } from 'next-themes';
+import { semanticColors } from '@heroui/theme';
 
 interface Props {
   data: TimeSeriesPoint[];
 }
 
-const SUCCESS_COLOR = '#17c964';
-
-const DANGER_COLOR = '#f31260';
-
 const Chart = ({ data }: Props) => {
-  const latest = data[data.length - 1];
-  const [displayValue, setDisplayValue] = useState<number>(latest.cumulative);
+  const latest = data.length > 0 ? data[data.length - 1] : null;
+  const min = Math.min(...data.map((d) => d.cumulative));
+
+  const [displayValue, setDisplayValue] = useState<number>(
+    latest?.cumulative ?? NaN,
+  );
+  const { theme } = useTheme();
+  const [prefersDarkScheme, setPrefersDarkScheme] = useState<boolean>();
+  const [color, setColor] = useState<string>();
 
   const handleMouseMove = (state: any) => {
     if (state.isTooltipActive && state.activePayload.length) {
@@ -38,8 +44,26 @@ const Chart = ({ data }: Props) => {
   };
 
   const handleMouseLeave = () => {
-    setDisplayValue(latest.cumulative);
+    setDisplayValue(latest?.cumulative ?? NaN);
   };
+
+  useEffect(() => {
+    setPrefersDarkScheme(
+      window.matchMedia('(prefers-color-scheme: dark)').matches,
+    );
+  }, []);
+
+  useEffect(() => {
+    const t =
+      (prefersDarkScheme && theme === 'system') || theme === 'dark'
+        ? 'dark'
+        : 'light';
+    setColor(
+      !!latest && latest.cumulative >= min
+        ? (semanticColors[t].success as any).DEFAULT
+        : (semanticColors[t].danger as any).DEFAULT,
+    );
+  }, [latest, min, prefersDarkScheme, theme]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -52,21 +76,21 @@ const Chart = ({ data }: Props) => {
           }}
         />
       </h3>
-      <ResponsiveContainer width="100%" height={400}>
-        <LineChart
-          data={data}
-          onMouseMove={handleMouseMove}
-          onMouseLeave={handleMouseLeave}
-        >
-          <XAxis dataKey="date" display="none" />
-          <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
-          <ReferenceLine y={data[0].amount} strokeDasharray="3 3" />
-          <Line
-            dataKey="cumulative"
-            stroke={latest.cumulative >= 0 ? SUCCESS_COLOR : DANGER_COLOR}
-          />
-        </LineChart>
-      </ResponsiveContainer>
+      {data.length > 0 && (
+        <ResponsiveContainer width="100%" height={400}>
+          <LineChart
+            data={data}
+            onMouseMove={handleMouseMove}
+            onMouseLeave={handleMouseLeave}
+          >
+            <YAxis domain={['dataMin', 'dataMax']} hide />
+            <XAxis dataKey="date" hide />
+            <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
+            <ReferenceLine y={min} strokeDasharray="3 3" />
+            <Line dataKey="cumulative" stroke={color} dot={false} />
+          </LineChart>
+        </ResponsiveContainer>
+      )}
     </div>
   );
 };
