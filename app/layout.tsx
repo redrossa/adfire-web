@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Header from '@/components/Header';
+import Headers from '@/components/Headers';
 import { SessionProvider } from 'next-auth/react';
 import Footer from '@/components/Footer';
 import { HeroUIProvider } from '@heroui/system';
@@ -44,7 +44,7 @@ export default async function RootLayout({
               <div className="overflow-hidden px-4 supports-[overflow:clip]:overflow-clip sm:px-6">
                 <div className="relative mx-auto w-full">
                   <div className="relative flex min-h-screen flex-col">
-                    <Header />
+                    <Headers />
                     <main className="grow w-full max-w-6xl mx-auto">
                       {children}
                     </main>
