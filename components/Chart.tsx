@@ -31,7 +31,7 @@ const Chart = ({ data }: Props) => {
   const min = Math.min(...data.map((d) => d.cumulative));
 
   const [displayValue, setDisplayValue] = useState<number>(
-    latest?.cumulative ?? NaN,
+    latest?.cumulative ?? 0,
   );
   const { theme } = useTheme();
   const [prefersDarkScheme, setPrefersDarkScheme] = useState<boolean>();
@@ -44,7 +44,7 @@ const Chart = ({ data }: Props) => {
   };
 
   const handleMouseLeave = () => {
-    setDisplayValue(latest?.cumulative ?? NaN);
+    setDisplayValue(latest?.cumulative ?? 0);
   };
 
   useEffect(() => {
@@ -59,7 +59,7 @@ const Chart = ({ data }: Props) => {
         ? 'dark'
         : 'light';
     setColor(
-      !!latest && latest.cumulative >= min
+      !!latest && latest.cumulative >= 0
         ? (semanticColors[t].success as any).DEFAULT
         : (semanticColors[t].danger as any).DEFAULT,
     );
@@ -86,7 +86,7 @@ const Chart = ({ data }: Props) => {
             <YAxis domain={['dataMin', 'dataMax']} hide />
             <XAxis dataKey="date" hide />
             <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
-            <ReferenceLine y={min} strokeDasharray="3 3" />
+            <ReferenceLine y={data[0].cumulative} strokeDasharray="3 3" />
             <Line dataKey="cumulative" stroke={color} dot={false} />
           </LineChart>
         </ResponsiveContainer>

@@ -5,12 +5,15 @@ import { cookies } from 'next/headers';
 import { handleResponse } from '@/lib/services/utils';
 
 export async function getTransactions(
-  includeMerchants: boolean = false,
+  accountId?: string,
 ): Promise<Transaction[]> {
   const cookieStore = await cookies();
 
   const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/transactions`);
-  url.searchParams.set('include_merchants', includeMerchants.toString());
+  if (accountId) {
+    url.searchParams.set('accountId', accountId.toString());
+  }
+
   const res = await fetch(url.toString(), {
     method: 'GET',
     credentials: 'include',
