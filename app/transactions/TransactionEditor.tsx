@@ -166,10 +166,19 @@ const TransactionEditor = ({ transactionForm }: Props) => {
     }
   };
 
+  const initData = async () => {
+    let accountOptions: AccountOption[];
+    try {
+      const accounts = await getAccounts();
+      accountOptions = accounts.flatMap((a) => mapToAccountOptions(a));
+    } catch {
+      accountOptions = [];
+    }
+    setAccountOptions(accountOptions);
+  };
+
   useEffect(() => {
-    getAccounts(true).then((accounts) => {
-      setAccountOptions(accounts.flatMap((a) => mapToAccountOptions(a)));
-    });
+    initData();
   }, []);
 
   return (

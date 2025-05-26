@@ -9,12 +9,17 @@ const Dashboard = async () => {
     redirect('/');
   }
 
-  const balance = await getBalance();
+  let balance;
+  try {
+    balance = await getBalance();
+  } catch {
+    balance = null;
+  }
 
   return (
     <div className="flex flex-col">
       <h3>Net Worth</h3>
-      <Chart data={balance.balances} />
+      <Chart data={balance?.balances ?? []} />
     </div>
   );
 };
