@@ -51,7 +51,7 @@ export default async function EditTransactionPage({ params }: Props) {
 
   return (
     <>
-      <h3 className="mb-8">Edit Account</h3>
+      <h3 className="mb-8">Edit Transaction</h3>
       <TransactionEditor transactionForm={transactionForm} />
     </>
   );

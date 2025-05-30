@@ -6,7 +6,6 @@ import {
   TrashIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import Link from 'next/link';
 import {
   Controller,
   SubmitHandler,
@@ -361,10 +360,9 @@ const TransactionEditor = ({ transactionForm }: Props) => {
         )}
         <Button
           className="ml-auto"
-          as={Link}
-          href="/transactions"
           variant="light"
           disableRipple
+          onPress={() => router.back()}
         >
           Cancel
         </Button>

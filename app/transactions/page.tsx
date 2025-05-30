@@ -58,8 +58,14 @@ export default async function TransactionsPage() {
                       <small>{dayjs(transaction.date).format('LL')}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
-                      <Chip radius="md" size="lg">
+                      <Chip
+                        variant="flat"
+                        radius="md"
+                        size="lg"
+                        color={transaction.amount! >= 0 ? 'success' : 'danger'}
+                      >
                         <code>
+                          {transaction.amount! > 0 ? '+' : ''}
                           {dollarFormatter.format(transaction.amount!)}
                         </code>
                       </Chip>

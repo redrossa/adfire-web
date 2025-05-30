@@ -6,7 +6,6 @@ import {
   TrashIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import Link from 'next/link';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { Account, AccountUser } from '@/lib/models';
@@ -77,7 +76,7 @@ const AccountEditor = ({ account }: Props) => {
           input: `p`,
         }}
         isInvalid={!!errors.name}
-        color={!!errors.name ? 'danger' : 'default'}
+        color={errors.name ? 'danger' : 'default'}
         errorMessage={errors.name?.message}
         {...register('name', { required: 'Name is required' })}
       />
@@ -106,7 +105,7 @@ const AccountEditor = ({ account }: Props) => {
                 input: 'p',
               }}
               isInvalid={!!errors.users?.[index]?.name}
-              color={!!errors.users?.[index]?.name ? 'danger' : 'default'}
+              color={errors.users?.[index]?.name ? 'danger' : 'default'}
               errorMessage={errors.users?.[index]?.name?.message}
               {...register(`users.${index}.name` as const, {
                 required: 'User name is required',
@@ -119,7 +118,7 @@ const AccountEditor = ({ account }: Props) => {
                 input: 'p',
               }}
               isInvalid={!!errors.users?.[index]?.mask}
-              color={!!errors.users?.[index]?.mask ? 'danger' : 'default'}
+              color={errors.users?.[index]?.mask ? 'danger' : 'default'}
               errorMessage={errors.users?.[index]?.mask?.message}
               {...register(`users.${index}.mask` as const, {
                 required: 'User mask is required',
@@ -166,10 +165,9 @@ const AccountEditor = ({ account }: Props) => {
         )}
         <Button
           className="ml-auto"
-          as={Link}
-          href="/accounts"
           variant="light"
           disableRipple
+          onPress={() => router.back()}
         >
           Cancel
         </Button>
