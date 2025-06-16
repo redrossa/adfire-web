@@ -6,6 +6,7 @@ import { SessionProvider } from 'next-auth/react';
 import Footer from '@/components/Footer';
 import { HeroUIProvider } from '@heroui/system';
 import { ThemeProvider } from 'next-themes';
+import { server } from '@/lib/mocks/node';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -28,6 +29,9 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  if (process.env.RUNTIME !== 'production') {
+    server.listen();
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body
