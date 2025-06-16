@@ -1,11 +1,14 @@
-import { getAccount, getAccountBalance } from '@/lib/services';
+import {
+  getAccount,
+  getAccountBalance,
+  getAccountTransactions,
+} from '@/lib/services';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
 import { Button } from '@heroui/button';
 import Link from 'next/link';
 import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline';
 import Chart from '@/components/Chart';
-import { getTransactions } from '@/lib/services/transactions';
 import { dayjs, dollarFormatter } from '@/lib/utils';
 import { Chip } from '@heroui/chip';
 
@@ -26,7 +29,7 @@ export default async function AccountDetailPage({ params }: Props) {
   const { id } = await params;
   const account = await getAccount(id);
   const balance = await getAccountBalance(id);
-  const transactions = await getTransactions(id);
+  const transactions = await getAccountTransactions(id);
 
   return (
     <>
@@ -45,8 +48,7 @@ export default async function AccountDetailPage({ params }: Props) {
       </div>
       <section className="mt-4 flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <h4>Balance</h4>
-          <Chart data={balance.balances} />
+          <Chart data={balance} />
         </div>
         <div className="flex flex-col gap-2">
           <h4>Transactions</h4>
@@ -61,16 +63,8 @@ export default async function AccountDetailPage({ params }: Props) {
                   <small>{dayjs(transaction.date).format('LL')}</small>
                 </div>
                 <div className="flex gap-2 items-center ml-auto">
-                  <Chip
-                    variant="flat"
-                    radius="md"
-                    size="lg"
-                    color={transaction.amount! >= 0 ? 'success' : 'danger'}
-                  >
-                    <code>
-                      {transaction.amount! > 0 ? '+' : ''}
-                      {dollarFormatter.format(transaction.amount!)}
-                    </code>
+                  <Chip variant="flat" radius="md" size="lg">
+                    <code>{dollarFormatter.format(transaction.amount)}</code>
                   </Chip>
                   <Button
                     disableRipple
@@ -103,26 +97,9 @@ export default async function AccountDetailPage({ params }: Props) {
                 className="p-4 flex items-center hover:bg-default/20"
               >
                 <div className="flex flex-col">
-                  <code className="opacity-60 text-medium px-0">
-                    #{user.mask}
-                  </code>
+                  <code className="text-medium px-0">#{user.mask}</code>
                   <small>{user.name}</small>
                 </div>
-                {/*<Button*/}
-                {/*  disableRipple*/}
-                {/*  isIconOnly*/}
-                {/*  variant="light"*/}
-                {/*  radius="full"*/}
-                {/*  className="ml-auto"*/}
-                {/*  startContent={*/}
-                {/*    <ChevronRightIcon*/}
-                {/*      className="opacity-60 w-4 h-auto"*/}
-                {/*      aria-hidden*/}
-                {/*    />*/}
-                {/*  }*/}
-                {/*  as={Link}*/}
-                {/*  href={`/accounts/${id}/users/${user.id}`}*/}
-                {/*/>*/}
               </div>
             ))}
           </div>

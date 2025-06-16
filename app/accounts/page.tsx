@@ -4,6 +4,8 @@ import { getAccounts } from '@/lib/services';
 import { Button } from '@heroui/button';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
+import { Chip } from '@heroui/chip';
+import { dollarFormatter } from '@/lib/utils';
 
 export default async function AccountsPage() {
   const session = await auth();
@@ -11,12 +13,7 @@ export default async function AccountsPage() {
     redirect('/');
   }
 
-  let accounts;
-  try {
-    accounts = await getAccounts();
-  } catch {
-    accounts = null;
-  }
+  const accounts = await getAccounts();
 
   return (
     <>
@@ -58,21 +55,25 @@ export default async function AccountsPage() {
                         {account.users.length === 1 ? 'user' : 'users'}
                       </small>
                     </div>
-                    <Button
-                      disableRipple
-                      isIconOnly
-                      variant="light"
-                      radius="full"
-                      className="ml-auto"
-                      startContent={
-                        <ChevronRightIcon
-                          className="opacity-60 w-4 h-auto"
-                          aria-hidden
-                        />
-                      }
-                      as={Link}
-                      href={`/accounts/${account.id}`}
-                    />
+                    <div className="flex gap-2 items-center ml-auto">
+                      <Chip variant="flat" radius="md" size="lg">
+                        <code>{dollarFormatter.format(account.amount)}</code>
+                      </Chip>
+                      <Button
+                        disableRipple
+                        isIconOnly
+                        variant="light"
+                        radius="full"
+                        startContent={
+                          <ChevronRightIcon
+                            className="opacity-60 w-4 h-auto"
+                            aria-hidden
+                          />
+                        }
+                        as={Link}
+                        href={`/accounts/${account.id}`}
+                      />
+                    </div>
                   </div>
                 ))}
               </div>

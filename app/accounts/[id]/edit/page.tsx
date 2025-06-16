@@ -19,6 +19,7 @@ export default async function EditAccountPage({ params }: Props) {
 
   const { id } = await params;
   const account = await getAccount(id);
+
   return (
     <>
       <h3 className="mb-8">Edit Account</h3>

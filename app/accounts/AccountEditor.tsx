@@ -8,18 +8,32 @@ import {
 } from '@heroicons/react/24/outline';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
-import { Account, AccountUser } from '@/lib/models';
 import { createAccount, deleteAccount, updateAccount } from '@/lib/services';
 import { Fragment } from 'react';
 import { Input } from '@heroui/input';
 import { Divider } from '@heroui/divider';
 import { Button } from '@heroui/button';
 import { cn } from '@/lib/utils';
+import { Account } from '@/lib/models';
+import DollarField from '@/components/DollarField';
 
-const emptyUser: AccountUser = {
+const emptyUser: AccountUserForm = {
   name: '',
   mask: '',
 };
+
+interface AccountUserForm {
+  id?: string;
+  name: string;
+  mask: string;
+}
+
+interface AccountForm {
+  id?: string;
+  name: string;
+  amount: number;
+  users: AccountUserForm[];
+}
 
 interface Props {
   account?: Account;
@@ -28,14 +42,31 @@ interface Props {
 const AccountEditor = ({ account }: Props) => {
   const router = useRouter();
 
+  const accountForm: AccountForm = !account
+    ? {
+        name: '',
+        amount: 0,
+        users: [emptyUser],
+      }
+    : {
+        id: account.id,
+        name: account.name,
+        amount: 0,
+        users: account.users.map((u) => ({
+          id: u.id,
+          name: u.name,
+          mask: u.mask,
+        })),
+      };
+
   const {
     register,
     control,
     handleSubmit,
     setError,
     formState: { errors, isSubmitting, isSubmitSuccessful },
-  } = useForm<Account>({
-    defaultValues: !account ? { users: [emptyUser] } : { ...account },
+  } = useForm<AccountForm>({
+    defaultValues: accountForm,
   });
 
   const { fields, append, remove } = useFieldArray({
@@ -43,12 +74,33 @@ const AccountEditor = ({ account }: Props) => {
     name: 'users',
   });
 
-  const onSubmit: SubmitHandler<Account> = async (data) => {
-    const isNew = !account?.id;
-    const service = isNew ? createAccount : updateAccount;
+  const onSubmit: SubmitHandler<AccountForm> = async (form) => {
+    const isNew = !account;
 
     try {
-      await service(data);
+      if (isNew) {
+        await createAccount({
+          name: form.name,
+          amount: form.amount,
+          isMerchant: false,
+          users: form.users.map((u) => ({
+            name: u.name,
+            mask: u.mask,
+          })),
+        });
+      } else {
+        await updateAccount({
+          id: form.id,
+          name: form.name,
+          amount: form.amount,
+          isMerchant: false,
+          users: form.users.map((u) => ({
+            id: u.id,
+            name: u.name,
+            mask: u.mask,
+          })),
+        });
+      }
       router.push('/accounts');
     } catch (err) {
       setError('root', { message: (err as Error).message });
@@ -66,20 +118,30 @@ const AccountEditor = ({ account }: Props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <Input
-        variant="faded"
-        label="Account Name"
-        labelPlacement="outside"
-        placeholder="Chase Freedom Unlimited"
-        classNames={{
-          label: 'h6',
-          input: `p`,
-        }}
-        isInvalid={!!errors.name}
-        color={errors.name ? 'danger' : 'default'}
-        errorMessage={errors.name?.message}
-        {...register('name', { required: 'Name is required' })}
-      />
+      <div className="w-full grid grid-cols-[1fr_auto_auto] gap-x-4">
+        <Input
+          variant="faded"
+          label="Account Name"
+          labelPlacement="outside"
+          placeholder="Chase Freedom Unlimited"
+          classNames={{
+            label: 'h6',
+            input: `p`,
+          }}
+          isInvalid={!!errors.name}
+          color={errors.name ? 'danger' : 'default'}
+          errorMessage={errors.name?.message}
+          defaultValue={accountForm.name}
+          {...register('name', { required: 'Name is required' })}
+        />
+        <DollarField
+          control={control}
+          name={`amount`}
+          label="Balance"
+          errorMessage={errors?.amount?.message}
+        />
+        <div className="w-10" />
+      </div>
       <Divider className="my-4" />
       <div className="w-full grid grid-cols-[1fr_auto_auto] gap-y-2 gap-x-4">
         <h6
@@ -107,6 +169,7 @@ const AccountEditor = ({ account }: Props) => {
               isInvalid={!!errors.users?.[index]?.name}
               color={errors.users?.[index]?.name ? 'danger' : 'default'}
               errorMessage={errors.users?.[index]?.name?.message}
+              defaultValue={field.name}
               {...register(`users.${index}.name` as const, {
                 required: 'User name is required',
               })}
@@ -120,6 +183,7 @@ const AccountEditor = ({ account }: Props) => {
               isInvalid={!!errors.users?.[index]?.mask}
               color={errors.users?.[index]?.mask ? 'danger' : 'default'}
               errorMessage={errors.users?.[index]?.mask?.message}
+              defaultValue={field.mask}
               {...register(`users.${index}.mask` as const, {
                 required: 'User mask is required',
               })}
@@ -150,7 +214,7 @@ const AccountEditor = ({ account }: Props) => {
         Add users
       </Button>
       <div className="w-full mt-8 flex items-center gap-2">
-        {account?.id && (
+        {!account ? null : (
           <Button
             disableRipple
             variant="bordered"
@@ -158,7 +222,7 @@ const AccountEditor = ({ account }: Props) => {
             startContent={
               <TrashIcon className="opacity-60 w-4 h-auto" aria-hidden />
             }
-            onPress={() => onDelete(account.id!)}
+            onPress={() => onDelete(account.id)}
           >
             Delete
           </Button>
