@@ -17,10 +17,8 @@ import {
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
 import { dayjs, dollarFormatter } from '@/lib/utils';
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import NumberFlow from '@number-flow/react';
-import { useTheme } from 'next-themes';
-import { semanticColors } from '@heroui/theme';
 
 interface Props {
   data: TimeSeriesPoint[];
@@ -28,46 +26,22 @@ interface Props {
 
 const Chart = ({ data }: Props) => {
   const latest = data.length > 0 ? data[data.length - 1] : null;
-  const min = Math.min(...data.map((d) => d.cumulative));
 
-  const [displayValue, setDisplayValue] = useState<number>(
-    latest?.cumulative ?? 0,
-  );
-  const { theme } = useTheme();
-  const [prefersDarkScheme, setPrefersDarkScheme] = useState<boolean>();
-  const [color, setColor] = useState<string>();
+  const [displayValue, setDisplayValue] = useState<number>(latest?.amount ?? 0);
 
   const handleMouseMove = (state: any) => {
     if (state.isTooltipActive && state.activePayload.length) {
-      setDisplayValue(state.activePayload[0].payload.cumulative);
+      setDisplayValue(state.activePayload[0].payload.amount);
     }
   };
 
   const handleMouseLeave = () => {
-    setDisplayValue(latest?.cumulative ?? 0);
+    setDisplayValue(latest?.amount ?? 0);
   };
-
-  useEffect(() => {
-    setPrefersDarkScheme(
-      window.matchMedia('(prefers-color-scheme: dark)').matches,
-    );
-  }, []);
-
-  useEffect(() => {
-    const t =
-      (prefersDarkScheme && theme === 'system') || theme === 'dark'
-        ? 'dark'
-        : 'light';
-    setColor(
-      !!latest && latest.cumulative >= 0
-        ? (semanticColors[t].success as any).DEFAULT
-        : (semanticColors[t].danger as any).DEFAULT,
-    );
-  }, [latest, min, prefersDarkScheme, theme]);
 
   return (
     <div className="flex flex-col gap-4">
-      <h3 className={displayValue >= 0 ? 'text-success' : 'text-danger'}>
+      <h3>
         <NumberFlow
           value={displayValue}
           format={{
@@ -86,8 +60,8 @@ const Chart = ({ data }: Props) => {
             <YAxis domain={['dataMin', 'dataMax']} hide />
             <XAxis dataKey="date" hide />
             <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
-            <ReferenceLine y={data[0].cumulative} strokeDasharray="3 3" />
-            <Line dataKey="cumulative" stroke={color} dot={false} />
+            <ReferenceLine y={data[0].amount} strokeDasharray="3 3" />
+            <Line dataKey="amount" dot={false} />
           </LineChart>
         </ResponsiveContainer>
       )}
@@ -108,9 +82,7 @@ const Tooltip = <TValue extends ValueType, TName extends NameType>({
   return (
     <Card>
       <CardBody>
-        <h5 className={value >= 0 ? 'text-success' : 'text-danger'}>
-          {dollarFormatter.format(value)}
-        </h5>
+        <h5>{dollarFormatter.format(value)}</h5>
         <small>{dayjs(label).format('ll')}</small>
       </CardBody>
     </Card>
