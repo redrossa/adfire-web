@@ -46,7 +46,7 @@ export async function createAccount(account: AccountCreate): Promise<Account> {
   return request({
     path: `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
     method: 'POST',
-    body: account,
+    payload: account,
   });
 }
 
@@ -55,7 +55,7 @@ export async function updateAccount(account: AccountUpdate): Promise<Account> {
   return request({
     path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`,
     method: 'PUT',
-    body: payload,
+    payload,
   });
 }
 

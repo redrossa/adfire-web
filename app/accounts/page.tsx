@@ -4,8 +4,7 @@ import { getAccounts } from '@/lib/services';
 import { Button } from '@heroui/button';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { Chip } from '@heroui/chip';
-import { dollarFormatter } from '@/lib/utils';
+import DollarChip from '@/components/DollarChip';
 
 export default async function AccountsPage() {
   const session = await auth();
@@ -58,9 +57,7 @@ export default async function AccountsPage() {
                       <small className="opacity-60">{account.holderName}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
-                      <Chip variant="flat" radius="md" size="lg">
-                        <code>{dollarFormatter.format(account.amount)}</code>
-                      </Chip>
+                      <DollarChip amount={account.amount} />
                       <Button
                         disableRipple
                         isIconOnly

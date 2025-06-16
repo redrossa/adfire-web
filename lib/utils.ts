@@ -25,7 +25,13 @@ export function getInitials(name: string) {
   return initials;
 }
 
-export const dollarFormatter = Intl.NumberFormat(undefined, {
+export const premiumDollarFormatter = Intl.NumberFormat(undefined, {
   style: 'currency',
   currency: 'USD',
+});
+
+export const deltaDollarFormatter = Intl.NumberFormat(undefined, {
+  style: 'currency',
+  currency: 'USD',
+  signDisplay: 'always',
 });

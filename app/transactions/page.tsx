@@ -4,8 +4,8 @@ import { Button } from '@heroui/button';
 import { getTransactions } from '@/lib/services/transactions';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { Chip } from '@heroui/chip';
-import { dayjs, dollarFormatter } from '@/lib/utils';
+import { dayjs } from '@/lib/utils';
+import DollarChip from '@/components/DollarChip';
 
 export default async function TransactionsPage() {
   const session = await auth();
@@ -58,17 +58,7 @@ export default async function TransactionsPage() {
                       <small>{dayjs(transaction.date).format('LL')}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
-                      <Chip
-                        variant="flat"
-                        radius="md"
-                        size="lg"
-                        color={transaction.amount! >= 0 ? 'success' : 'danger'}
-                      >
-                        <code>
-                          {transaction.amount! > 0 ? '+' : ''}
-                          {dollarFormatter.format(transaction.amount!)}
-                        </code>
-                      </Chip>
+                      <DollarChip amount={transaction.amount} isDelta />
                       <Button
                         disableRipple
                         isIconOnly

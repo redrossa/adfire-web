@@ -108,13 +108,13 @@ export const handlers = [
           entries: [
             {
               id: 'groceries-debit-0',
-              accountUserId: '0000',
+              accountId: 'platypus-checking',
               date: '2025-01-31',
               amount: -100,
             },
             {
               id: 'groceries-credit-0',
-              accountUserId: 'heb#merchant',
+              accountId: 'heb',
               date: '2025-02-01',
               amount: 100,
             },

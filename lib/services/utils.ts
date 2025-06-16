@@ -28,7 +28,7 @@ export async function request<TResponse>(
       'Content-Type': 'application/json',
       Cookie: cookieStore.toString(),
     },
-    body: resource.body ? JSON.stringify(resource.body) : undefined,
+    body: resource.payload ? JSON.stringify(resource.payload) : undefined,
   });
 
   return await res.json();

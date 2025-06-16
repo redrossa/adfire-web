@@ -9,8 +9,8 @@ import { Button } from '@heroui/button';
 import Link from 'next/link';
 import { ChevronRightIcon, PencilIcon } from '@heroicons/react/24/outline';
 import Chart from '@/components/Chart';
-import { dayjs, dollarFormatter } from '@/lib/utils';
-import { Chip } from '@heroui/chip';
+import { dayjs } from '@/lib/utils';
+import DollarChip from '@/components/DollarChip';
 
 interface Params {
   id: string;
@@ -69,9 +69,7 @@ export default async function AccountDetailPage({ params }: Props) {
                   <small>{dayjs(transaction.date).format('LL')}</small>
                 </div>
                 <div className="flex gap-2 items-center ml-auto">
-                  <Chip variant="flat" radius="md" size="lg">
-                    <code>{dollarFormatter.format(transaction.amount)}</code>
-                  </Chip>
+                  <DollarChip amount={transaction.amount} isDelta />
                   <Button
                     disableRipple
                     isIconOnly

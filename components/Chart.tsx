@@ -3,7 +3,6 @@
 import {
   Line,
   LineChart,
-  ReferenceLine,
   ResponsiveContainer,
   Tooltip as TooltipRC,
   TooltipProps,
@@ -16,7 +15,7 @@ import {
   NameType,
   ValueType,
 } from 'recharts/types/component/DefaultTooltipContent';
-import { dayjs, dollarFormatter } from '@/lib/utils';
+import { dayjs, premiumDollarFormatter } from '@/lib/utils';
 import { useState } from 'react';
 import NumberFlow from '@number-flow/react';
 
@@ -60,7 +59,6 @@ const Chart = ({ data }: Props) => {
             <YAxis domain={['dataMin', 'dataMax']} hide />
             <XAxis dataKey="date" hide />
             <TooltipRC position={{ y: 0 }} content={<Tooltip />} />
-            <ReferenceLine y={data[0].amount} strokeDasharray="3 3" />
             <Line dataKey="amount" dot={false} />
           </LineChart>
         </ResponsiveContainer>
@@ -82,7 +80,7 @@ const Tooltip = <TValue extends ValueType, TName extends NameType>({
   return (
     <Card>
       <CardBody>
-        <h5>{dollarFormatter.format(value)}</h5>
+        <h5>{premiumDollarFormatter.format(value)}</h5>
         <small>{dayjs(label).format('ll')}</small>
       </CardBody>
     </Card>

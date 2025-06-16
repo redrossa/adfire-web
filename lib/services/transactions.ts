@@ -1,103 +1,44 @@
 'use server';
 
-import { Transaction } from '../models';
-import { cookies } from 'next/headers';
-import { handleResponse } from '@/lib/services/utils';
+import { Transaction, TransactionCreate, TransactionUpdate } from '../models';
+import { request } from '@/lib/services/utils';
 
-export async function getTransactions(
-  accountId?: string,
-): Promise<Transaction[]> {
-  const cookieStore = await cookies();
-
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/transactions`);
-  if (accountId) {
-    url.searchParams.set('accountId', accountId.toString());
-  }
-
-  const res = await fetch(url.toString(), {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
-    },
+export async function getTransactions(): Promise<Transaction[]> {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
   });
-
-  return await handleResponse(res);
 }
 
 export async function getTransaction(id: string): Promise<Transaction> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
-    {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: cookieStore.toString(),
-      },
-    },
-  );
-
-  return await handleResponse(res);
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
+  });
 }
 
 export async function deleteTransaction(id: string): Promise<void> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
-    {
-      method: 'DELETE',
-      credentials: 'include',
-      headers: {
-        Cookie: cookieStore.toString(),
-      },
-    },
-  );
-
-  return await handleResponse(res);
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
+    method: 'DELETE',
+  });
 }
 
 export async function createTransaction(
-  transaction: Transaction,
+  transaction: TransactionCreate,
 ): Promise<Transaction> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
     method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
-    },
-    body: JSON.stringify(transaction),
+    payload: transaction,
   });
-
-  return await handleResponse(res);
 }
 
 export async function updateTransaction(
-  transaction: Transaction,
+  transaction: TransactionUpdate,
 ): Promise<Transaction> {
-  const cookieStore = await cookies();
-
-  const id = transaction.id!;
-  delete transaction.id;
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
-    {
-      method: 'PUT',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: cookieStore.toString(),
-      },
-      body: JSON.stringify(transaction),
-    },
-  );
-
-  return await handleResponse(res);
+  const { id, ...payload } = transaction;
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
+    method: 'PUT',
+    payload,
+  });
 }
