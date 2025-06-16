@@ -64,11 +64,7 @@ export async function createMerchant(name: string): Promise<Account> {
     isMerchant: true,
     name,
     amount: 0,
-    users: [
-      {
-        name,
-        mask: '🛒',
-      },
-    ],
+    holderName: '',
+    mask: '',
   });
 }

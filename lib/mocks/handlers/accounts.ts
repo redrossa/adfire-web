@@ -10,31 +10,16 @@ export const handlers = [
         name: 'Platypus Checking',
         isMerchant: false,
         amount: 2500,
-        users: [
-          {
-            id: '0000',
-            name: 'Redrossa',
-            mask: '0000',
-          },
-        ],
+        holderName: 'Redrossa',
+        mask: '0000',
       },
       {
         id: 'platypus-credit',
         name: 'Platypus Credit',
         isMerchant: false,
         amount: -600,
-        users: [
-          {
-            id: '9999',
-            name: 'Redrossa',
-            mask: '9999',
-          },
-          {
-            id: '8888',
-            name: 'Blueazul',
-            mask: '8888',
-          },
-        ],
+        holderName: 'Redrossa',
+        mask: '9999',
       },
     ]);
   }),
@@ -44,13 +29,8 @@ export const handlers = [
       name: 'Platypus Checking',
       isMerchant: false,
       amount: 2500,
-      users: [
-        {
-          id: '0000',
-          name: 'Redrossa',
-          mask: '0000',
-        },
-      ],
+      holderName: 'Redrossa',
+      mask: '0000',
     });
   }),
   http.get(`${process.env.NEXT_PUBLIC_API_URL}/accounts/:id/balance`, () => {

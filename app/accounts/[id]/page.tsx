@@ -34,7 +34,13 @@ export default async function AccountDetailPage({ params }: Props) {
   return (
     <>
       <div className="flex items-center justify-between">
-        <h3>{account.name}</h3>
+        <div className="flex flex-col">
+          <h3>
+            {account.name}
+            <code className="text-4xl opacity-60">#{account.mask}</code>
+          </h3>
+          <p className="opacity-60">{account.holderName}</p>
+        </div>
         <Button
           as={Link}
           href={`/accounts/${id}/edit`}
@@ -87,22 +93,6 @@ export default async function AccountDetailPage({ params }: Props) {
           ) : (
             <p>No transactions with this account yet.</p>
           )}
-        </div>
-        <div className="flex flex-col gap-2">
-          <h4>Users</h4>
-          <div className="flex flex-col rounded-md">
-            {account.users.map((user) => (
-              <div
-                key={user.name}
-                className="p-4 flex items-center hover:bg-default/20"
-              >
-                <div className="flex flex-col">
-                  <code className="text-medium px-0">#{user.mask}</code>
-                  <small>{user.name}</small>
-                </div>
-              </div>
-            ))}
-          </div>
         </div>
       </section>
     </>

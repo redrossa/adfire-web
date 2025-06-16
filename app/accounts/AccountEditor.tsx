@@ -2,37 +2,23 @@
 
 import {
   CheckCircleIcon,
-  PlusIcon,
   TrashIcon,
   XCircleIcon,
 } from '@heroicons/react/24/outline';
-import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { useRouter } from 'next/navigation';
 import { createAccount, deleteAccount, updateAccount } from '@/lib/services';
-import { Fragment } from 'react';
 import { Input } from '@heroui/input';
-import { Divider } from '@heroui/divider';
 import { Button } from '@heroui/button';
-import { cn } from '@/lib/utils';
-import { Account } from '@/lib/models';
+import { Account, AccountUpdate } from '@/lib/models';
 import DollarField from '@/components/DollarField';
-
-const emptyUser: AccountUserForm = {
-  name: '',
-  mask: '',
-};
-
-interface AccountUserForm {
-  id?: string;
-  name: string;
-  mask: string;
-}
 
 interface AccountForm {
   id?: string;
   name: string;
   amount: number;
-  users: AccountUserForm[];
+  holderName: string;
+  mask: string;
 }
 
 interface Props {
@@ -46,17 +32,15 @@ const AccountEditor = ({ account }: Props) => {
     ? {
         name: '',
         amount: 0,
-        users: [emptyUser],
+        holderName: '',
+        mask: '',
       }
     : {
         id: account.id,
         name: account.name,
-        amount: 0,
-        users: account.users.map((u) => ({
-          id: u.id,
-          name: u.name,
-          mask: u.mask,
-        })),
+        amount: account.amount,
+        holderName: account.holderName,
+        mask: account.mask,
       };
 
   const {
@@ -69,37 +53,22 @@ const AccountEditor = ({ account }: Props) => {
     defaultValues: accountForm,
   });
 
-  const { fields, append, remove } = useFieldArray({
-    control,
-    name: 'users',
-  });
-
   const onSubmit: SubmitHandler<AccountForm> = async (form) => {
     const isNew = !account;
+    const payload: AccountUpdate = {
+      name: form.name,
+      amount: form.amount,
+      isMerchant: false,
+      holderName: form.holderName,
+      mask: form.mask,
+    };
 
     try {
       if (isNew) {
-        await createAccount({
-          name: form.name,
-          amount: form.amount,
-          isMerchant: false,
-          users: form.users.map((u) => ({
-            name: u.name,
-            mask: u.mask,
-          })),
-        });
+        await createAccount(payload);
       } else {
-        await updateAccount({
-          id: form.id,
-          name: form.name,
-          amount: form.amount,
-          isMerchant: false,
-          users: form.users.map((u) => ({
-            id: u.id,
-            name: u.name,
-            mask: u.mask,
-          })),
-        });
+        payload.id = form.id;
+        await updateAccount(payload);
       }
       router.push('/accounts');
     } catch (err) {
@@ -118,7 +87,7 @@ const AccountEditor = ({ account }: Props) => {
 
   return (
     <form onSubmit={handleSubmit(onSubmit)}>
-      <div className="w-full grid grid-cols-[1fr_auto_auto] gap-x-4">
+      <div className="w-full grid grid-cols-[1fr_auto] gap-x-4 gap-y-8">
         <Input
           variant="faded"
           label="Account Name"
@@ -134,85 +103,47 @@ const AccountEditor = ({ account }: Props) => {
           defaultValue={accountForm.name}
           {...register('name', { required: 'Name is required' })}
         />
+        <Input
+          variant="faded"
+          label="Mask"
+          labelPlacement="outside"
+          placeholder="0000"
+          classNames={{
+            label: 'h6',
+            input: 'p',
+          }}
+          isInvalid={!!errors.mask}
+          color={errors.mask ? 'danger' : 'default'}
+          errorMessage={errors.mask?.message}
+          defaultValue={accountForm.mask}
+          {...register('mask', {
+            required: 'Mask is required',
+          })}
+        />
+        <Input
+          variant="faded"
+          label="Cardholder Name"
+          labelPlacement="outside"
+          placeholder="John Doe"
+          classNames={{
+            label: 'h6',
+            input: 'p',
+          }}
+          isInvalid={!!errors.holderName}
+          color={errors.holderName ? 'danger' : 'default'}
+          errorMessage={errors.holderName?.message}
+          defaultValue={accountForm.holderName}
+          {...register('holderName', {
+            required: 'Cardholder name is required',
+          })}
+        />
         <DollarField
           control={control}
           name={`amount`}
           label="Balance"
           errorMessage={errors?.amount?.message}
         />
-        <div className="w-10" />
       </div>
-      <Divider className="my-4" />
-      <div className="w-full grid grid-cols-[1fr_auto_auto] gap-y-2 gap-x-4">
-        <h6
-          className={cn({
-            'text-danger': errors.users?.some?.((u) => u?.name),
-          })}
-        >
-          Cardholder Name
-        </h6>
-        <h6
-          className={cn('col-span-2', {
-            'text-danger': errors.users?.some?.((u) => u?.mask),
-          })}
-        >
-          Mask
-        </h6>
-        {fields.map((field, index) => (
-          <Fragment key={field.id}>
-            <Input
-              variant="faded"
-              placeholder="John Doe"
-              classNames={{
-                input: 'p',
-              }}
-              isInvalid={!!errors.users?.[index]?.name}
-              color={errors.users?.[index]?.name ? 'danger' : 'default'}
-              errorMessage={errors.users?.[index]?.name?.message}
-              defaultValue={field.name}
-              {...register(`users.${index}.name` as const, {
-                required: 'User name is required',
-              })}
-            />
-            <Input
-              variant="faded"
-              placeholder="0000"
-              classNames={{
-                input: 'p',
-              }}
-              isInvalid={!!errors.users?.[index]?.mask}
-              color={errors.users?.[index]?.mask ? 'danger' : 'default'}
-              errorMessage={errors.users?.[index]?.mask?.message}
-              defaultValue={field.mask}
-              {...register(`users.${index}.mask` as const, {
-                required: 'User mask is required',
-              })}
-            />
-            <Button
-              disableRipple
-              isIconOnly
-              variant="light"
-              radius="full"
-              aria-label="Delete user"
-              onPress={() => remove(index)}
-              isDisabled={fields.length === 1}
-            >
-              <TrashIcon className="opacity-60 w-4 h-auto" aria-hidden />
-            </Button>
-          </Fragment>
-        ))}
-      </div>
-      <Button
-        disableRipple
-        variant="light"
-        onPress={() => append(emptyUser)}
-        startContent={
-          <PlusIcon className="opacity-60 w-4 h-auto" aria-hidden />
-        }
-        className="my-4"
-      >
-        Add users
-      </Button>
       <div className="w-full mt-8 flex items-center gap-2">
         {!account ? null : (
           <Button

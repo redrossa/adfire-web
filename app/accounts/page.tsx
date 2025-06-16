@@ -49,11 +49,13 @@ export default async function AccountsPage() {
                     className="p-4 flex items-center hover:bg-default/20"
                   >
                     <div className="flex flex-col">
-                      <h5>{account.name}</h5>
-                      <small>
-                        {account.users.length}{' '}
-                        {account.users.length === 1 ? 'user' : 'users'}
-                      </small>
+                      <h5>
+                        {account.name}
+                        <code className="text-base opacity-60">
+                          #{account.mask}
+                        </code>
+                      </h5>
+                      <small className="opacity-60">{account.holderName}</small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <Chip variant="flat" radius="md" size="lg">

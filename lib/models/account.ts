@@ -1,21 +1,14 @@
 import { Create, Update } from '@/lib/models/common';
 
-export interface AccountUser {
-  id: string;
-  name: string;
-  mask: string;
-}
-
-export interface Account<TAccountUser = AccountUser> {
+export interface Account {
   id: string;
   name: string;
   isMerchant: boolean;
   amount: number;
-  users: TAccountUser[];
+  holderName: string;
+  mask: string;
 }
 
-export type AccountUserCreate = Create<AccountUser>;
-export type AccountCreate = Create<Account<AccountUserCreate>>;
+export type AccountCreate = Create<Account>;
 
-export type AccountUserUpdate = Update<AccountUser>;
-export type AccountUpdate = Update<Account<AccountUserUpdate>>;
+export type AccountUpdate = Update<Account>;
