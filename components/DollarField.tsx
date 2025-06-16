@@ -4,10 +4,16 @@ import { NumberInput } from '@heroui/number-input';
 interface DollarFieldProps extends UseControllerProps<any> {
   control: Control<any>;
   name: string;
+  label?: string;
   errorMessage?: string;
 }
 
-const DollarField = ({ control, name, errorMessage }: DollarFieldProps) => {
+const DollarField = ({
+  control,
+  name,
+  label,
+  errorMessage,
+}: DollarFieldProps) => {
   return (
     <Controller
       name={name}
@@ -20,12 +26,16 @@ const DollarField = ({ control, name, errorMessage }: DollarFieldProps) => {
           aria-label="Amount in USD"
           variant="faded"
           placeholder="USD"
+          label={label}
+          labelPlacement="outside"
           formatOptions={{
             style: 'currency',
             currency: 'USD',
           }}
           classNames={{
-            inputWrapper: 'py-0 px-3 h-10',
+            inputWrapper: '-mr-4',
+            label: 'h6',
+            input: 'p',
           }}
           value={field.value ?? null}
           onValueChange={field.onChange}
