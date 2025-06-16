@@ -1,20 +1,21 @@
-import { Balance } from '@/lib/models/balance';
-
-export interface Account {
-  id?: string;
-  name: string;
-  isMerchant: boolean;
-  users: AccountUser[];
-}
+import { Create, Update } from '@/lib/models/common';
 
 export interface AccountUser {
-  id?: string;
+  id: string;
   name: string;
   mask: string;
 }
 
-export interface AccountBalance extends Account, Balance {
-  users: AccountUserBalance[];
+export interface Account<TAccountUser = AccountUser> {
+  id: string;
+  name: string;
+  isMerchant: boolean;
+  amount: number;
+  users: TAccountUser[];
 }
 
-export interface AccountUserBalance extends AccountUser, Balance {}
+export type AccountUserCreate = Create<AccountUser>;
+export type AccountCreate = Create<Account<AccountUserCreate>>;
+
+export type AccountUserUpdate = Update<AccountUser>;
+export type AccountUpdate = Update<Account<AccountUserUpdate>>;
