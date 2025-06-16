@@ -1,95 +1,69 @@
 'use server';
 
-import { Account, AccountBalance } from '../models';
-import { cookies } from 'next/headers';
-import { handleResponse } from '@/lib/services/utils';
+import { Account, AccountCreate, AccountUpdate, Transaction } from '../models';
+import { request } from '@/lib/services/utils';
+import { TimeSeriesPoint } from '@/lib/models/balance';
 
 export async function getAccounts(
   includeMerchants: boolean = false,
 ): Promise<Account[]> {
-  const cookieStore = await cookies();
-
-  const url = new URL(`${process.env.NEXT_PUBLIC_API_URL}/accounts`);
-  url.searchParams.set('include_merchants', includeMerchants.toString());
-  const res = await fetch(url.toString(), {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
+    searchParams: {
+      includeMerchants: includeMerchants.toString(),
     },
   });
-
-  return await handleResponse(res);
 }
 
 export async function getAccount(id: string): Promise<Account> {
-  const cookieStore = await cookies();
+  return request({ path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}` });
+}
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`, {
-    method: 'GET',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
-    },
+export async function getAccountBalance(
+  id: string,
+): Promise<TimeSeriesPoint[]> {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}/balance`,
   });
+}
 
-  return await handleResponse(res);
+export async function getAccountTransactions(
+  id: string,
+): Promise<Transaction[]> {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}/transactions`,
+  });
 }
 
 export async function deleteAccount(id: string): Promise<void> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`, {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`,
     method: 'DELETE',
-    credentials: 'include',
-    headers: {
-      Cookie: cookieStore.toString(),
-    },
   });
-
-  return await handleResponse(res);
 }
 
-export async function createAccount(account: Account): Promise<Account> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts`, {
+export async function createAccount(account: AccountCreate): Promise<Account> {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
     method: 'POST',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
-    },
-    body: JSON.stringify(account),
+    body: account,
   });
-
-  return await handleResponse(res);
 }
 
-export async function updateAccount(account: Account): Promise<Account> {
-  const cookieStore = await cookies();
-
-  const id = account.id!;
-  delete account.id;
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`, {
+export async function updateAccount(account: AccountUpdate): Promise<Account> {
+  const { id, ...payload } = account;
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}`,
     method: 'PUT',
-    credentials: 'include',
-    headers: {
-      'Content-Type': 'application/json',
-      Cookie: cookieStore.toString(),
-    },
-    body: JSON.stringify(account),
+    body: payload,
   });
-
-  return await handleResponse(res);
 }
 
 export async function createMerchant(name: string): Promise<Account> {
   return createAccount({
     isMerchant: true,
     name,
+    amount: 0,
     users: [
       {
         name,
@@ -97,27 +71,4 @@ export async function createMerchant(name: string): Promise<Account> {
       },
     ],
   });
-}
-
-export async function getAccountBalance(id: string): Promise<AccountBalance> {
-  const cookieStore = await cookies();
-
-  const res = await fetch(
-    `${process.env.NEXT_PUBLIC_API_URL}/accounts/${id}/balance`,
-    {
-      method: 'GET',
-      credentials: 'include',
-      headers: {
-        'Content-Type': 'application/json',
-        Cookie: cookieStore.toString(),
-      },
-    },
-  );
-
-  if (!res.ok) {
-    console.error(res);
-    throw new Error();
-  }
-
-  return res.json();
 }
