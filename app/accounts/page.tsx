@@ -45,16 +45,13 @@ export default async function AccountsPage() {
                 {accounts.map((account) => (
                   <div
                     key={account.name}
-                    className="p-4 flex items-center hover:bg-default/20"
+                    className="p-2 flex items-center hover:bg-default/20"
                   >
                     <div className="flex flex-col">
-                      <h5>
-                        {account.name}
-                        <code className="text-base opacity-60">
-                          #{account.mask}
-                        </code>
-                      </h5>
-                      <small className="opacity-60">{account.holderName}</small>
+                      <h5>{account.name}</h5>
+                      <small>
+                        {account.holderName} <code>#{account.mask}</code>
+                      </small>
                     </div>
                     <div className="flex gap-2 items-center ml-auto">
                       <DollarChip amount={account.amount} />

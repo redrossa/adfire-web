@@ -51,7 +51,7 @@ export default async function TransactionsPage() {
                 {transactions.map((transaction) => (
                   <div
                     key={transaction.id}
-                    className="p-4 flex items-center hover:bg-default/20"
+                    className="p-2 flex items-center hover:bg-default/20"
                   >
                     <div className="flex flex-col">
                       <h5>{transaction.name}</h5>

@@ -1,14 +1,15 @@
 import { deltaDollarFormatter, premiumDollarFormatter } from '@/lib/utils';
-import { Chip } from '@heroui/chip';
+import { Chip, ChipProps } from '@heroui/chip';
 
 export interface Props {
   amount: number;
   isDelta?: boolean;
+  variant?: ChipProps['variant'];
 }
 
-const DollarChip = ({ amount, isDelta }: Props) => (
+const DollarChip = ({ amount, isDelta, variant = 'flat' }: Props) => (
   <Chip
-    variant="flat"
+    variant={variant}
     radius="md"
     size="lg"
     color={amount >= 0 ? 'success' : 'danger'}

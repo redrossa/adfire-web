@@ -1,6 +1,11 @@
 'use server';
 
-import { Transaction, TransactionCreate, TransactionUpdate } from '../models';
+import {
+  Account,
+  Transaction,
+  TransactionCreate,
+  TransactionUpdate,
+} from '../models';
 import { request } from '@/lib/services/utils';
 
 export async function getTransactions(): Promise<Transaction[]> {
@@ -12,6 +17,12 @@ export async function getTransactions(): Promise<Transaction[]> {
 export async function getTransaction(id: string): Promise<Transaction> {
   return request({
     path: `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}`,
+  });
+}
+
+export async function getTransactionAccounts(id: string): Promise<Account[]> {
+  return request({
+    path: `${process.env.NEXT_PUBLIC_API_URL}/transactions/${id}/accounts`,
   });
 }
 

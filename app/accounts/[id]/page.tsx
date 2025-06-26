@@ -35,11 +35,11 @@ export default async function AccountDetailPage({ params }: Props) {
     <>
       <div className="flex items-center justify-between">
         <div className="flex flex-col">
-          <h3>
-            {account.name}
-            <code className="text-4xl opacity-60">#{account.mask}</code>
-          </h3>
-          <p className="opacity-60">{account.holderName}</p>
+          <h3>{account.name}</h3>
+          <p>
+            {account.holderName}
+            <code>#{account.mask}</code>
+          </p>
         </div>
         <Button
           as={Link}
@@ -62,7 +62,7 @@ export default async function AccountDetailPage({ params }: Props) {
             transactions.map((transaction) => (
               <div
                 key={transaction.id}
-                className="p-4 flex items-center hover:bg-default/20"
+                className="p-2 flex items-center hover:bg-default/20"
               >
                 <div className="flex flex-col">
                   <h5>{transaction.name}</h5>
