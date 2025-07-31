@@ -177,13 +177,13 @@ const TransactionsGroup = ({
   });
 
   return (
-    <div className="border border-foreground-100 rounded-md">
+    <div className="border border-foreground-200 dark:border-foreground-100 rounded-md">
       <table className="w-full table-auto border-collapse">
         <tbody>
           {table.getRowModel().rows.map((row) => (
             <tr
               key={row.id}
-              className="hover:bg-foreground-50/50 [&:not(:last-child)]:border-b border-foreground-100 group"
+              className="hover:bg-foreground-100/50 dark:hover:bg-foreground-50/50 [&:not(:last-child)]:border-b border-foreground-200 dark:border-foreground-100 group"
             >
               {row.getVisibleCells().map((cell) => (
                 <td
