@@ -1,4 +1,8 @@
-import { Transaction, TransactionSummary } from '@/app/lib/models/transactions';
+import {
+  Transaction,
+  TransactionSummary,
+  TransactionSummaryGroup,
+} from '@/app/lib/models/transactions';
 import { transactions } from '@/app/lib/data/transactions';
 import { isCredit, isDebit, isMerchant, isMine } from '@/app/lib/utils';
 import uniqBy from 'lodash/uniqBy';
@@ -44,4 +48,21 @@ export async function fetchTransactionSummary(): Promise<TransactionSummary[]> {
       merchants,
     };
   });
+}
+
+export async function fetchTransactionSummaryGroup(): Promise<
+  TransactionSummaryGroup[]
+> {
+  const summaries = await fetchTransactionSummary();
+  const groupByDates = Object.groupBy(summaries, (s) => s.date) as {
+    [date: string]: TransactionSummary[];
+  };
+  const arr: TransactionSummaryGroup[] = Object.entries(groupByDates).map(
+    ([date, summaries]) => ({
+      date: date,
+      summaries,
+    }),
+  );
+  arr.sort((a, b) => b.date.localeCompare(a.date));
+  return arr;
 }

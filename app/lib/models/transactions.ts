@@ -32,3 +32,8 @@ export interface TransactionSummary {
   debitAccounts: Account[];
   merchants: Account[];
 }
+
+export interface TransactionSummaryGroup {
+  date: string;
+  summaries: TransactionSummary[];
+}

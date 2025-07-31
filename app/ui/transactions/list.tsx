@@ -12,13 +12,14 @@ import { Chip } from '@heroui/chip';
 import NextLink from 'next/link';
 import { Account } from '@/app/lib/models/accounts';
 import { Avatar } from '@heroui/avatar';
-import { TransactionSummary as Summary } from '@/app/lib/models/transactions';
+import {
+  TransactionSummary,
+  TransactionSummaryGroup,
+} from '@/app/lib/models/transactions';
 import isEqual from 'react-fast-compare';
-import { useIsMobile } from '@/app/lib/hooks/useIsMobile';
 
 interface TransactionsListProps {
-  transactions: Summary[];
-  viewport?: string;
+  transactions: TransactionSummaryGroup[];
 }
 
 const Link = ({ children, href }: { children: string; href: string }) => (
@@ -63,7 +64,7 @@ const AccountLinkGroup = ({ accounts }: { accounts: Account[] }) => {
 const Title = ({
   transaction: { name, merchants },
 }: {
-  transaction: Summary;
+  transaction: TransactionSummary;
 }) => (
   <p className="font-bold">
     <Link href="#">{name}</Link> from <AccountLinkGroup accounts={merchants} />
@@ -79,7 +80,7 @@ const Subtitle = ({
     debitAccounts,
   },
 }: {
-  transaction: Summary;
+  transaction: TransactionSummary;
 }) => {
   if (type === 'income') {
     return (
@@ -131,11 +132,12 @@ const Subtitle = ({
   return <small className="text-foreground-500">{type}</small>;
 };
 
-const TransactionsList = ({
+const TransactionsGroup = ({
   transactions,
-  viewport,
-}: TransactionsListProps) => {
-  const columnHelper = createColumnHelper<Summary>();
+}: {
+  transactions: TransactionSummary[];
+}) => {
+  const columnHelper = createColumnHelper<TransactionSummary>();
   const columns = [
     columnHelper.display({
       id: 'summary',
@@ -144,13 +146,6 @@ const TransactionsList = ({
           <Title transaction={row.original} />
           <Subtitle transaction={row.original} />
         </div>
-      ),
-    }),
-    columnHelper.accessor('date', {
-      cell: ({ cell }) => (
-        <p className="text-sm text-right text-foreground-500 italic whitespace-nowrap">
-          <Link href="#">{dayjs(cell.getValue()).fromNow()}</Link>
-        </p>
       ),
     }),
     columnHelper.accessor((row) => row.debitAmount - row.creditAmount, {
@@ -175,16 +170,10 @@ const TransactionsList = ({
     }),
   ];
 
-  const isMobile = useIsMobile();
   const table = useReactTable({
     data: transactions,
     columns,
     getCoreRowModel: getCoreRowModel(),
-    state: {
-      columnVisibility: {
-        date: viewport === 'desktop' && !isMobile,
-      },
-    },
   });
 
   return (
@@ -208,6 +197,19 @@ const TransactionsList = ({
           ))}
         </tbody>
       </table>
+    </div>
+  );
+};
+
+const TransactionsList = ({ transactions }: TransactionsListProps) => {
+  return (
+    <div className="flex flex-col gap-4">
+      {transactions.map((group) => (
+        <div key={group.date}>
+          <p className="mb-2 small">{dayjs(group.date).format('LL')}</p>
+          <TransactionsGroup transactions={group.summaries} />
+        </div>
+      ))}
     </div>
   );
 };
