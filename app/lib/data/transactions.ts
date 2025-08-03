@@ -3,7 +3,50 @@ import { accountMap } from '@/app/lib/data/accounts';
 
 export const transactions: Transaction[] = [
   {
+    name: 'Cash out',
+    type: 'transfer',
+    entries: [
+      {
+        date: '2025-07-23',
+        amount: 100,
+        isCredit: true,
+        account: accountMap['Robinhood Individual'],
+      },
+      {
+        date: '2025-07-25',
+        amount: 1.75,
+        isCredit: false,
+        account: accountMap['Robinhood Fee'],
+      },
+      {
+        date: '2025-07-25',
+        amount: 98.25,
+        isCredit: false,
+        account: accountMap['Chase Total Checking'],
+      },
+    ],
+  },
+  {
+    name: 'Investments',
+    type: 'transfer',
+    entries: [
+      {
+        date: '2025-07-23',
+        amount: 3000,
+        isCredit: true,
+        account: accountMap['Wealthfront Individual'],
+      },
+      {
+        date: '2025-07-25',
+        amount: 3000,
+        isCredit: false,
+        account: accountMap['Robinhood Individual'],
+      },
+    ],
+  },
+  {
     name: 'Salary (Takehome)',
+    type: 'income',
     entries: [
       {
         date: '2025-07-23',
@@ -21,19 +64,8 @@ export const transactions: Transaction[] = [
   },
   {
     name: 'Merchandise',
+    type: 'expense',
     entries: [
-      {
-        date: '2025-07-10',
-        amount: 54.16,
-        isCredit: true,
-        account: accountMap['Prime Visa'],
-      },
-      {
-        date: '2025-07-11',
-        amount: 54.16,
-        isCredit: false,
-        account: accountMap['Amazon'],
-      },
       {
         date: '2025-07-13',
         amount: 54.16,
@@ -50,19 +82,8 @@ export const transactions: Transaction[] = [
   },
   {
     name: 'Merchandise',
+    type: 'expense',
     entries: [
-      {
-        date: '2025-07-10',
-        amount: 54.16,
-        isCredit: true,
-        account: accountMap['Amex Gold'],
-      },
-      {
-        date: '2025-07-11',
-        amount: 54.16,
-        isCredit: false,
-        account: accountMap['Amazon'],
-      },
       {
         date: '2025-07-13',
         amount: 54.16,
@@ -78,7 +99,80 @@ export const transactions: Transaction[] = [
     ],
   },
   {
+    name: 'Merchandise',
+    type: 'expense',
+    entries: [
+      {
+        date: '2025-07-13',
+        amount: 114.97,
+        isCredit: false,
+        account: accountMap['Prime Visa'],
+      },
+      {
+        date: '2025-07-14',
+        amount: 114.97,
+        isCredit: true,
+        account: accountMap['Amazon'],
+      },
+    ],
+  },
+  {
+    name: 'Merchandise',
+    type: 'expense',
+    entries: [
+      {
+        date: '2025-07-13',
+        amount: 114.97,
+        isCredit: false,
+        account: accountMap['Amazon Balance'],
+      },
+      {
+        date: '2025-07-14',
+        amount: 114.97,
+        isCredit: true,
+        account: accountMap['Amazon'],
+      },
+    ],
+  },
+  {
+    name: 'Merchandise',
+    type: 'expense',
+    entries: [
+      {
+        date: '2025-07-10',
+        amount: 54.16,
+        isCredit: true,
+        account: accountMap['Prime Visa'],
+      },
+      {
+        date: '2025-07-11',
+        amount: 54.16,
+        isCredit: false,
+        account: accountMap['Amazon'],
+      },
+    ],
+  },
+  {
+    name: 'Merchandise',
+    type: 'expense',
+    entries: [
+      {
+        date: '2025-07-10',
+        amount: 54.16,
+        isCredit: true,
+        account: accountMap['Amex Gold'],
+      },
+      {
+        date: '2025-07-11',
+        amount: 54.16,
+        isCredit: false,
+        account: accountMap['Amazon'],
+      },
+    ],
+  },
+  {
     name: 'Groceries',
+    type: 'expense',
     entries: [
       {
         date: '2025-07-10',
@@ -96,6 +190,7 @@ export const transactions: Transaction[] = [
   },
   {
     name: 'Merchandise',
+    type: 'expense',
     entries: [
       {
         date: '2025-07-10',
@@ -107,24 +202,13 @@ export const transactions: Transaction[] = [
         date: '2025-07-11',
         amount: 255.71,
         isCredit: false,
-        account: accountMap['Amazon'],
-      },
-      {
-        date: '2025-07-13',
-        amount: 114.97,
-        isCredit: false,
-        account: accountMap['Prime Visa'],
-      },
-      {
-        date: '2025-07-14',
-        amount: 114.97,
-        isCredit: true,
         account: accountMap['Amazon'],
       },
     ],
   },
   {
     name: 'Merchandise',
+    type: 'expense',
     entries: [
       {
         date: '2025-07-10',
@@ -138,22 +222,11 @@ export const transactions: Transaction[] = [
         isCredit: false,
         account: accountMap['Amazon'],
       },
-      {
-        date: '2025-07-13',
-        amount: 114.97,
-        isCredit: false,
-        account: accountMap['Amazon Credit'],
-      },
-      {
-        date: '2025-07-14',
-        amount: 114.97,
-        isCredit: true,
-        account: accountMap['Amazon'],
-      },
     ],
   },
   {
     name: 'Groceries and medicines',
+    type: 'expense',
     entries: [
       {
         date: '2025-07-10',
@@ -177,6 +250,7 @@ export const transactions: Transaction[] = [
   },
   {
     name: 'Salary',
+    type: 'income',
     entries: [
       {
         date: '2025-07-09',
@@ -230,6 +304,7 @@ export const transactions: Transaction[] = [
   },
   {
     name: 'Salary (including employer matching)',
+    type: 'income',
     entries: [
       {
         date: '2025-07-09',

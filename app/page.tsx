@@ -1,12 +1,12 @@
-import { fetchTransactionSummaryGroup } from '@/app/lib/queries/transactions';
-import TransactionsList from '@/app/ui/transactions/list';
+import { fetchTransactions } from '@/app/lib/queries/transactions';
+import TransactionsListScroll from '@/app/ui/transactions/list';
 
 export default async function DashboardPage() {
-  const transactions = await fetchTransactionSummaryGroup();
+  const transactions = await fetchTransactions();
   return (
     <>
       <h4 className="mb-4">Transactions</h4>
-      <TransactionsList transactions={transactions} />
+      <TransactionsListScroll transactions={transactions} />
     </>
   );
 }

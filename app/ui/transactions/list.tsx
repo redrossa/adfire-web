@@ -6,20 +6,27 @@ import {
   getInitials,
   premiumDollarFormatter,
 } from '@/app/lib/utils';
-import { createColumnHelper, getCoreRowModel } from '@tanstack/table-core';
-import { flexRender, useReactTable } from '@tanstack/react-table';
+import {
+  CellContext,
+  createColumnHelper,
+  getCoreRowModel,
+} from '@tanstack/table-core';
+import { useReactTable } from '@tanstack/react-table';
 import { Chip } from '@heroui/chip';
 import NextLink from 'next/link';
 import { Account } from '@/app/lib/models/accounts';
 import { Avatar } from '@heroui/avatar';
+import { Transaction } from '@/app/lib/models/transactions';
 import {
-  TransactionSummary,
-  TransactionSummaryGroup,
-} from '@/app/lib/models/transactions';
-import isEqual from 'react-fast-compare';
+  groupListItems,
+  identifyIsNetCredit,
+  toListItem,
+} from '@/app/ui/transactions/utils';
+import { TransactionListItem } from '@/app/ui/transactions/models';
+import GridList from '@/app/ui/grid-list';
 
 interface TransactionsListProps {
-  transactions: TransactionSummaryGroup[];
+  transactions: Transaction[];
 }
 
 const Link = ({ children, href }: { children: string; href: string }) => (
@@ -62,111 +69,87 @@ const AccountLinkGroup = ({ accounts }: { accounts: Account[] }) => {
 };
 
 const Title = ({
-  transaction: { name, merchants },
+  transaction: { name, counterparties },
 }: {
-  transaction: TransactionSummary;
+  transaction: TransactionListItem;
 }) => (
   <p className="font-bold">
-    <Link href="#">{name}</Link> from <AccountLinkGroup accounts={merchants} />
+    <Link href="#">{name}</Link> from{' '}
+    <AccountLinkGroup accounts={counterparties} />
   </p>
 );
 
-const Subtitle = ({
-  transaction: {
-    type,
-    creditAmount,
-    debitAmount,
-    creditAccounts,
-    debitAccounts,
-  },
-}: {
-  transaction: TransactionSummary;
-}) => {
-  if (type === 'income') {
-    return (
-      <small className="text-foreground-500">
-        Debited {premiumDollarFormatter.format(debitAmount)}{' '}
-        {debitAccounts.length === 1 ? 'to' : 'among'}{' '}
-        <AccountLinkGroup accounts={debitAccounts} />
-      </small>
-    );
-  } else if (type === 'expense') {
-    if (debitAmount === 0) {
-      return (
-        <small className="text-foreground-500">
-          Credited {premiumDollarFormatter.format(creditAmount)}{' '}
-          {creditAccounts.length === 1 ? 'from' : 'from among'}{' '}
-          <AccountLinkGroup accounts={creditAccounts} />
-        </small>
-      );
-    } else {
-      const RefundedTo = () => (
-        <>
-          Refunded {premiumDollarFormatter.format(debitAmount)}{' '}
-          {debitAccounts.length === 1 ? 'to' : 'among'}{' '}
-          <AccountLinkGroup accounts={debitAccounts} />
-        </>
-      );
-
-      const OutOf = () =>
-        debitAmount !== creditAmount && (
-          <>out of {premiumDollarFormatter.format(creditAmount)}</>
-        );
-
-      const CreditedFrom = () =>
-        !isEqual(debitAccounts, creditAccounts) && (
-          <>
-            originally credited{' '}
-            {creditAccounts.length === 1 ? 'from' : 'from among'}{' '}
-            <AccountLinkGroup accounts={creditAccounts} />
-          </>
-        );
-
-      return (
-        <small className="text-foreground-500">
-          <RefundedTo /> <OutOf /> <CreditedFrom />
-        </small>
-      );
-    }
+const Subtitle = ({ transaction }: { transaction: TransactionListItem }) => {
+  const isNetCredit = identifyIsNetCredit(transaction);
+  const { type, accounts, credit, debit } = transaction;
+  let action: string, amount: number;
+  switch (type) {
+    case 'income':
+      action = 'Deposited';
+      amount = debit;
+      break;
+    case 'transfer':
+      action = 'Transfered';
+      amount = debit;
+      break;
+    case 'expense':
+      action = isNetCredit ? 'Charged' : 'Refunded';
+      amount = isNetCredit ? credit : debit;
+      break;
   }
-  return <small className="text-foreground-500">{type}</small>;
+  return (
+    <p>
+      <small>
+        {action} {premiumDollarFormatter.format(amount)} to{' '}
+        <AccountLinkGroup accounts={accounts} />
+      </small>
+    </p>
+  );
 };
 
-const TransactionsGroup = ({
+const TransactionSummaryCell = ({
+  row,
+}: CellContext<TransactionListItem, unknown>) => (
+  <div className="flex flex-col gap-2">
+    <Title transaction={row.original} />
+    <Subtitle transaction={row.original} />
+  </div>
+);
+
+const TransactionWorthCell = ({
+  cell,
+}: CellContext<TransactionListItem, number>) => {
+  const value = cell.getValue();
+  const isNetZero = value === 0;
+  const color = value >= 0 ? 'success' : 'danger';
+  return (
+    <div className="flex justify-end">
+      <Chip
+        variant="flat"
+        radius="md"
+        size="md"
+        color={!isNetZero ? color : undefined}
+      >
+        {deltaDollarFormatter.format(value)}
+      </Chip>
+    </div>
+  );
+};
+
+const TransactionsList = ({
   transactions,
 }: {
-  transactions: TransactionSummary[];
+  transactions: TransactionListItem[];
 }) => {
-  const columnHelper = createColumnHelper<TransactionSummary>();
+  const columnHelper = createColumnHelper<TransactionListItem>();
   const columns = [
     columnHelper.display({
       id: 'summary',
-      cell: ({ row }) => (
-        <div className="flex flex-col gap-2">
-          <Title transaction={row.original} />
-          <Subtitle transaction={row.original} />
-        </div>
-      ),
+      cell: TransactionSummaryCell,
     }),
-    columnHelper.accessor((row) => row.debitAmount - row.creditAmount, {
+    columnHelper.accessor(({ credit, debit }) => debit - credit, {
       id: 'worth',
-      cell: ({ cell }) => {
-        const value = cell.getValue();
-        const isNetZero = value === 0;
-        const color = value >= 0 ? 'success' : 'danger';
-        return (
-          <div className="flex justify-end">
-            <Chip
-              variant="flat"
-              radius="md"
-              size="md"
-              color={!isNetZero ? color : undefined}
-            >
-              {deltaDollarFormatter.format(value)}
-            </Chip>
-          </div>
-        );
-      },
+      cell: TransactionWorthCell,
     }),
   ];
 
@@ -176,42 +159,25 @@ const TransactionsGroup = ({
     getCoreRowModel: getCoreRowModel(),
   });
 
-  return (
-    <div className="border border-foreground-200 dark:border-foreground-100 rounded-md">
-      <table className="w-full table-auto border-collapse">
-        <tbody>
-          {table.getRowModel().rows.map((row) => (
-            <tr
-              key={row.id}
-              className="hover:bg-foreground-100/50 dark:hover:bg-foreground-50/50 [&:not(:last-child)]:border-b border-foreground-200 dark:border-foreground-100 group"
-            >
-              {row.getVisibleCells().map((cell) => (
-                <td
-                  key={cell.id}
-                  className="p-4 group-first:first:rounded-tl-md group-first:last:rounded-tr-md group-last:first:rounded-bl-md group-last:last:rounded-br-md"
-                >
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </td>
-              ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
-  );
+  return <GridList table={table} />;
 };
 
-const TransactionsList = ({ transactions }: TransactionsListProps) => {
+const TransactionsListScroll = ({ transactions }: TransactionsListProps) => {
+  const mapped = transactions.map(toListItem);
+  const grouped = groupListItems(mapped);
   return (
     <div className="flex flex-col gap-4">
-      {transactions.map((group) => (
-        <div key={group.date}>
-          <p className="mb-2 small">{dayjs(group.date).format('LL')}</p>
-          <TransactionsGroup transactions={group.summaries} />
-        </div>
-      ))}
+      {Object.entries(grouped).map(
+        ([date, group]) =>
+          group?.length && (
+            <div key={date}>
+              <p className="mb-2 small">{dayjs(date).format('LL')}</p>
+              <TransactionsList transactions={group} />
+            </div>
+          ),
+      )}
     </div>
   );
 };
 
-export default TransactionsList;
+export default TransactionsListScroll;

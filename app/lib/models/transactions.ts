@@ -4,7 +4,7 @@ export interface Entry {
   /** Date (YYYY-MM-DD) of the entry */
   date: string;
 
-  /** Non-negative dollar value */
+  /** Positive non-zero dollar value */
   amount: number;
 
   /** Whether the entry credits or debits the account */
@@ -18,22 +18,13 @@ export interface Transaction {
   /** Generic name of the transaction */
   name: string;
 
-  /** Entries in this transaction */
-  entries: Entry[];
-}
-
-export interface TransactionSummary {
+  /** Supported types of transactions */
   type: 'income' | 'expense' | 'transfer';
-  name: string;
-  date: string;
-  creditAmount: number;
-  debitAmount: number;
-  creditAccounts: Account[];
-  debitAccounts: Account[];
-  merchants: Account[];
-}
 
-export interface TransactionSummaryGroup {
-  date: string;
-  summaries: TransactionSummary[];
+  /**
+   * Entries in this transaction. It cannot be an empty array,
+   * must have equal total credits and total debits, and contains
+   * only one credited account.
+   */
+  entries: Entry[];
 }

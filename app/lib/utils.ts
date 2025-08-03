@@ -41,3 +41,6 @@ export const isCredit = (e: Entry) => e.isCredit;
 export const isDebit = (e: Entry) => !e.isCredit;
 export const isMerchant = (e: Entry) => e.account.type === 'merchant';
 export const isMine = (e: Entry) => e.account.type !== 'merchant';
+export const toDate = (e: Entry) => e.date;
+export const toAccount = (e: Entry) => e.account;
+export const toAmount = (e: Entry) => e.amount;
