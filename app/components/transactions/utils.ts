@@ -1,4 +1,4 @@
-import { TransactionListItem } from '@/app/ui/transactions/models';
+import { TransactionListItem } from '@/app/components/transactions/models';
 import { Transaction } from '@/app/lib/models/transactions';
 import min from 'lodash/min';
 import {

@@ -1,12 +1,11 @@
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
-import Header from '@/app/ui/header';
-import { SessionProvider } from 'next-auth/react';
-import Footer from '@/app/ui/footer';
-import { HeroUIProvider } from '@heroui/system';
+import Header from '@/app/components/header';
+import Footer from '@/app/components/footer';
 import { ThemeProvider } from 'next-themes';
 import { auth } from '@/auth';
+import { SessionProvider } from 'next-auth/react';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -38,28 +37,26 @@ export default async function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-[-0.25px] antialiased has-data-home:bg-zinc-50 dark:has-not-data-home:before:hidden dark:has-data-home:bg-zinc-950`}
       >
-        <HeroUIProvider>
-          <SessionProvider>
-            <ThemeProvider
-              attribute="class"
-              defaultTheme="system"
-              enableSystem
-              disableTransitionOnChange
-            >
-              <div className="overflow-hidden px-4 supports-[overflow:clip]:overflow-clip sm:px-6">
-                <div className="relative mx-auto w-full">
-                  <div className="relative flex min-h-screen flex-col">
-                    <Header />
-                    <main className="grow w-full max-w-6xl mx-auto">
-                      {!session ? landing : children}
-                    </main>
-                    <Footer />
-                  </div>
+        <SessionProvider>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="system"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <div className="overflow-hidden px-4 supports-[overflow:clip]:overflow-clip sm:px-6">
+              <div className="relative mx-auto w-full">
+                <div className="relative flex min-h-screen flex-col">
+                  <Header />
+                  <main className="grow w-full max-w-6xl mx-auto">
+                    {!session ? landing : children}
+                  </main>
+                  <Footer />
                 </div>
               </div>
-            </ThemeProvider>
-          </SessionProvider>
-        </HeroUIProvider>
+            </div>
+          </ThemeProvider>
+        </SessionProvider>
       </body>
     </html>
   );
