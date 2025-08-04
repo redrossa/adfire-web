@@ -35,7 +35,7 @@ const ProfileDropdown = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
+      <DropdownMenuTrigger asChild className="cursor-pointer">
         <Avatar className="h-8 w-8 rounded-full">
           <AvatarImage src={imgSrc} alt={name} />
           <AvatarFallback className="rounded-full">{initials}</AvatarFallback>
@@ -63,7 +63,7 @@ const ProfileDropdown = () => {
         <DropdownMenuItem
           variant="destructive"
           onClick={handleSignOut}
-          className="rounded-none"
+          className="rounded-none cursor-pointer"
         >
           <LogOut />
           Log out
