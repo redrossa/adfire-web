@@ -1,8 +1,12 @@
-import Landing from '@/app/Landing';
-import { auth } from '@/auth';
-import Dashboard from '@/app/Dashboard';
+import { fetchTransactions } from '@/app/lib/queries/transactions';
+import TransactionsListScroll from '@/app/components/transactions/list';
 
-export default async function RootPage() {
-  const session = await auth();
-  return !session ? <Landing /> : <Dashboard />;
+export default async function DashboardPage() {
+  const transactions = await fetchTransactions();
+  return (
+    <>
+      <h1 className="mb-4 text-lg font-bold">Transactions</h1>
+      <TransactionsListScroll transactions={transactions} />
+    </>
+  );
 }
