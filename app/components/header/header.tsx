@@ -12,7 +12,7 @@ const Header = async () => {
   return (
     <header className="relative">
       <nav className="mx-auto flex h-[72px] w-full items-center justify-between gap-3">
-        <Link className="shrink-0" href="/public" aria-label="Home" replace>
+        <Link className="shrink-0" href="/" aria-label="Home" replace>
           <span className="sr-only">Adfire</span>
           <Image
             src="/adfire.svg"
