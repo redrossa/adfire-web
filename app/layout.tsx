@@ -6,6 +6,7 @@ import Footer from '@/app/components/footer';
 import { ThemeProvider } from 'next-themes';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
+import server from '@/app/lib/mocks/handlers';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -32,10 +33,13 @@ export default async function RootLayout({
   children,
 }: Readonly<RootProps>) {
   const session = await auth();
+  if (process.env.NODE_ENV === 'development') {
+    server.listen();
+  }
   return (
     <html lang="en" suppressHydrationWarning>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-[-0.25px] antialiased has-data-home:bg-zinc-50 dark:has-not-data-home:before:hidden dark:has-data-home:bg-zinc-950`}
+        className={`${geistSans.variable} ${geistMono.variable} font-sans tracking-[-0.25px] antialiased`}
       >
         <SessionProvider>
           <ThemeProvider

@@ -1,6 +1,5 @@
 'use client';
 
-import { getInitials } from '@/app/lib/utils';
 import { signOut, useSession } from 'next-auth/react';
 import {
   Avatar,
@@ -15,30 +14,37 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/app/components/ui/dropdown-menu';
-import { LogOut } from 'lucide-react';
+import { LogOut, MoonIcon, SunIcon } from 'lucide-react';
+import { useTheme } from 'next-themes';
+import { getInitials } from '@/app/lib/selectors/accounts';
 
 const ProfileDropdown = () => {
   const { data: session, status } = useSession();
+  const { resolvedTheme, setTheme } = useTheme();
 
   if (status !== 'authenticated') {
     return null;
   }
 
+  const handleTheme = () => {
+    setTheme(resolvedTheme === 'light' ? 'dark' : 'light');
+  };
+
   const handleSignOut = async () => {
     await signOut({ redirect: true, redirectTo: '/' });
   };
 
-  const imgSrc = session?.user?.image;
-  const name = session?.user?.name;
+  const imgSrc = session?.user?.image ?? undefined;
+  const name = session?.user?.name ?? '';
   const email = session?.user?.email;
-  const initials = getInitials(session?.user?.name);
+  const initials = getInitials(name);
 
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild className="cursor-pointer">
-        <Avatar className="h-8 w-8 rounded-full">
+        <Avatar className="h-8 w-8 border">
           <AvatarImage src={imgSrc} alt={name} />
-          <AvatarFallback className="rounded-full">{initials}</AvatarFallback>
+          <AvatarFallback className="font-light">{initials}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
       <DropdownMenuContent
@@ -47,9 +53,9 @@ const ProfileDropdown = () => {
       >
         <DropdownMenuLabel className="p-1 font-normal">
           <div className="flex items-center gap-2 px-1 py-1.5 text-left text-sm">
-            <Avatar className="h-8 w-8 rounded-full">
+            <Avatar className="h-8 w-8 border">
               <AvatarImage src={imgSrc} alt={name} />
-              <AvatarFallback className="rounded-full">CN</AvatarFallback>
+              <AvatarFallback className="font-light">{initials}</AvatarFallback>
             </Avatar>
             <div className="grid flex-1 text-left text-sm leading-tight">
               <span className="truncate font-medium">{name}</span>
@@ -60,6 +66,13 @@ const ProfileDropdown = () => {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
+        <DropdownMenuItem
+          className="rounded-none cursor-pointer"
+          onClick={handleTheme}
+        >
+          {resolvedTheme === 'light' ? <MoonIcon /> : <SunIcon />}
+          Switch theme
+        </DropdownMenuItem>
         <DropdownMenuItem
           variant="destructive"
           onClick={handleSignOut}
