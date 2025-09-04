@@ -2,7 +2,6 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/../adfire-ui/.idea/adfire-ui.iml" filepath="$PROJECT_DIR$/../adfire-ui/.idea/adfire-ui.iml" />
       <module fileurl="file://$PROJECT_DIR$/.idea/adfire-web.iml" filepath="$PROJECT_DIR$/.idea/adfire-web.iml" />
     </modules>
   </component>

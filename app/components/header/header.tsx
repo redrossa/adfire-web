@@ -2,6 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import ProfileDropdown from '@/app/components/header/profile-dropdown';
 import { auth } from '@/auth';
+import { Button } from '@/app/components/ui/button';
 
 const Header = async () => {
   const session = await auth();
@@ -23,10 +24,19 @@ const Header = async () => {
             className="dark:invert"
           />
         </Link>
-        <ProfileDropdown />
+        <div className="flex items-center">
+          <Button asChild variant="link" size="sm">
+            <Link href="/transactions">Transactions</Link>
+          </Button>
+          <Button asChild variant="link" size="sm">
+            <Link href="/accounts">Accounts</Link>
+          </Button>
+          <div className="inline-flex ml-4 min-w-8">
+            <ProfileDropdown />
+          </div>
+        </div>
       </nav>
     </header>
   );
 };
-
 export default Header;

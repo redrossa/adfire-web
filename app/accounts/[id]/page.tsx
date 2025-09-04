@@ -1,12 +1,7 @@
-import {
-  fetchAccount,
-  fetchAccountBalances,
-  fetchAccountTransactions,
-} from '@/app/lib/queries/accounts';
-import AccountDetail from '@/app/components/accounts/detail';
-import TransactionsListScroll from '@/app/components/transactions/list';
-import BalanceChart from '@/app/components/balances/charts';
-import { contextualize } from '@/app/lib/selectors/transactions';
+import { AccountDetail } from '@/app/components/accounts';
+import { TransactionList } from '@/app/components/transactions';
+import { getAccountsById, getAccountsByIdTransactions } from '@/app/lib/sdk';
+import { notFound } from 'next/navigation';
 
 interface Props {
   params: Promise<{
@@ -16,15 +11,25 @@ interface Props {
 
 export default async function AccountPage({ params }: Props) {
   const { id } = await params;
-  const account = await fetchAccount(id);
-  const transactions = await fetchAccountTransactions(account.id);
-  const contexts = transactions.map((t) => contextualize(t, account));
-  const balances = await fetchAccountBalances(account.id);
+  const { data: account } = await getAccountsById({ path: { id } });
+  const { data: transactions } = await getAccountsByIdTransactions({
+    path: { id },
+    query: { order: 'desc' },
+  });
+  if (!account) {
+    notFound();
+  }
   return (
     <div className="flex flex-col gap-8">
       <AccountDetail account={account} />
-      <BalanceChart balances={balances} />
-      <TransactionsListScroll contexts={contexts} />
+      {!transactions?.length ? (
+        <p>No transactions in this account.</p>
+      ) : (
+        <div>
+          <h2 className="font-bold mb-2">Related transactions</h2>
+          <TransactionList transactions={transactions} />
+        </div>
+      )}
     </div>
   );
 }

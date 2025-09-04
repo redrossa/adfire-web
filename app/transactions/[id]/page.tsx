@@ -1,9 +1,7 @@
-import {
-  TransactionEntryList,
-  TransactionHeading,
-} from '@/app/components/transactions/detail';
-import { fetchTransaction } from '@/app/lib/queries/transactions';
-import { contextualize } from '@/app/lib/selectors/transactions';
+import { TransactionHeading } from '@/app/components/transactions';
+import { EntryList } from '@/app/components/entries';
+import { getTransactionsById, getTransactionsByIdEntries } from '@/app/lib/sdk';
+import { notFound } from 'next/navigation';
 
 interface Props {
   params: Promise<{
@@ -13,15 +11,18 @@ interface Props {
 
 export default async function TransactionPage({ params }: Props) {
   const { id } = await params;
-  const transaction = await fetchTransaction(id);
-  console.log(transaction);
-  const context = contextualize(transaction);
+  const { data: transaction } = await getTransactionsById({ path: { id } });
+  const { data: entries } = await getTransactionsByIdEntries({ path: { id } });
+  if (!transaction || !entries) {
+    // A transaction needs to have entries
+    notFound();
+  }
   return (
     <div className="flex flex-col gap-4">
       <span className="text-xl">
-        <TransactionHeading context={context} showDate />
+        <TransactionHeading transaction={transaction} showDate />
       </span>
-      <TransactionEntryList context={context} />
+      <EntryList entries={entries} />
     </div>
   );
 }

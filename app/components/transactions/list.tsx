@@ -6,7 +6,6 @@ import {
   getCoreRowModel,
 } from '@tanstack/table-core';
 import { useReactTable } from '@tanstack/react-table';
-import { TransactionContext } from '@/app/lib/models/transactions';
 import { TransactionHeading } from '@/app/components/transactions/detail';
 import dayjs from 'dayjs';
 import List from '@/app/components/list';
@@ -14,34 +13,23 @@ import { useMemo } from 'react';
 import { Badge } from '@/app/components/ui/badge';
 import { cn } from '@/app/lib/utils';
 import { deltaDollarFormatter } from '@/app/lib/utils/format';
+import { Transaction } from '@/app/lib/sdk';
 
 interface TransactionsListProps {
-  contexts: TransactionContext[];
+  transactions: Transaction[];
 }
 
-const TransactionDetailCell = ({
-  row,
-}: CellContext<TransactionContext, unknown>) => (
+const TransactionDetailCell = ({ row }: CellContext<Transaction, unknown>) => (
   <div className="p-2 text-sm md:text-base">
-    <TransactionHeading context={row.original} />
+    <TransactionHeading transaction={row.original} />
   </div>
 );
 
-export const TransactionDollarCell = ({
-  row,
-}: CellContext<TransactionContext, unknown>) => {
-  const isReferenced = row.original.reference;
-  const amount = isReferenced
-    ? row.original.referenceBalance
-    : row.original.portfolioBalance;
+const TransactionDollarCell = ({ row }: CellContext<Transaction, unknown>) => {
+  const amount = row.original.equity;
   const bullish = 'bg-bullish/20 text-bullish';
   const bearish = 'bg-bearish/20 text-bearish';
-  let color: string;
-  if (isReferenced?.type === 'expense' || isReferenced?.type === 'liability') {
-    color = amount > 0 ? bearish : bullish;
-  } else {
-    color = amount > 0 ? bullish : bearish;
-  }
+  const color = amount > 0 ? bullish : bearish;
   return (
     <div className="flex justify-end p-2">
       <Badge
@@ -57,8 +45,8 @@ export const TransactionDollarCell = ({
   );
 };
 
-const TransactionsList = ({ contexts }: TransactionsListProps) => {
-  const columnHelper = createColumnHelper<TransactionContext>();
+const TransactionListGroup = ({ transactions }: TransactionsListProps) => {
+  const columnHelper = createColumnHelper<Transaction>();
   const columns = useMemo(
     () => [
       columnHelper.display({
@@ -74,7 +62,7 @@ const TransactionsList = ({ contexts }: TransactionsListProps) => {
   );
 
   const table = useReactTable({
-    data: contexts,
+    data: transactions,
     columns,
     getCoreRowModel: getCoreRowModel(),
   });
@@ -82,8 +70,8 @@ const TransactionsList = ({ contexts }: TransactionsListProps) => {
   return <List table={table} />;
 };
 
-const TransactionsListScroll = ({ contexts }: TransactionsListProps) => {
-  const grouped = Object.groupBy(contexts, (it) => it.date);
+export const TransactionList = ({ transactions }: TransactionsListProps) => {
+  const grouped = Object.groupBy(transactions, (it) => it.date);
   return (
     <div className="flex flex-col gap-4">
       {Object.entries(grouped).map(
@@ -93,12 +81,10 @@ const TransactionsListScroll = ({ contexts }: TransactionsListProps) => {
               <p className="mb-2">
                 <small>{dayjs(date).format('LL')}</small>
               </p>
-              <TransactionsList contexts={group} />
+              <TransactionListGroup transactions={group} />
             </div>
           ),
       )}
     </div>
   );
 };
-
-export default TransactionsListScroll;

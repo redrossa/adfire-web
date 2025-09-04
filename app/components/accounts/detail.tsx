@@ -5,15 +5,15 @@ import {
   AvatarFallback,
   AvatarImage,
 } from '@/app/components/ui/avatar';
-import { Account } from '@/app/lib/models/accounts';
-import { getInitials, getLogo } from '@/app/lib/selectors/accounts';
+import { getInitials, getLogo } from '@/app/lib/utils/accounts';
 import { AccountLink } from '@/app/components/accounts/links';
+import { Account } from '@/app/lib/sdk';
 
 interface Props {
   account: Account;
 }
 
-const AccountDetail = ({ account }: Props) => {
+export const AccountDetail = ({ account }: Props) => {
   const initials = getInitials(account.name, true);
   const logo = account.domain && getLogo(account.domain);
   return (
@@ -31,5 +31,3 @@ const AccountDetail = ({ account }: Props) => {
     </div>
   );
 };
-
-export default AccountDetail;

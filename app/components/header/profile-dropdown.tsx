@@ -16,7 +16,7 @@ import {
 } from '@/app/components/ui/dropdown-menu';
 import { LogOut, MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from 'next-themes';
-import { getInitials } from '@/app/lib/selectors/accounts';
+import { getInitials } from '@/app/lib/utils/accounts';
 
 const ProfileDropdown = () => {
   const { data: session, status } = useSession();

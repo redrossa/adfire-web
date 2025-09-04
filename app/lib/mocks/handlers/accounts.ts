@@ -1,77 +1,74 @@
 import { http, HttpResponse } from 'msw';
-import { accounts } from '@/app/lib/mocks/data/accounts';
-import { transactions } from '@/app/lib/mocks/data/transactions';
-import { identifyDate, toAccount } from '@/app/lib/selectors/transactions';
-import { getBalance } from '@/app/lib/selectors/accounts';
-import { sum, orderBy } from 'lodash';
-import { Balance } from '@/app/lib/models/balances';
+import { mockDB } from '@/app/lib/mocks';
+import { Account, AccountInput, Id, Order, Transaction } from '@/app/lib/sdk';
+import { orderBy, sortBy } from 'lodash';
 
 export const handlers = [
-  http.get(`${process.env.NEXT_PUBLIC_API_URL}/accounts`, () => {
-    // return all accounts
-    return HttpResponse.json(accounts);
-  }),
-  http.get(`${process.env.NEXT_PUBLIC_API_URL}/accounts/:id`, ({ params }) => {
-    // return an account by id
-    const account = accounts.find((account) => account.id === params.id);
-    if (!account) {
-      throw HttpResponse.json(null, { status: 404 });
-    }
-    return HttpResponse.json(account);
-  }),
-  http.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id/transactions`,
-    ({ params }) => {
-      // return all transactions of an account by id
-      const account = accounts.find((account) => account.id === params.id);
-      if (!account) {
-        throw HttpResponse.json(null, { status: 404 });
-      }
-      const txs = transactions.filter((t) =>
-        t.entries
-          .map(toAccount)
-          .map((a) => a.id)
-          .includes(account.id),
+  http.get<never, never, Account[]>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
+    ({ request }) => {
+      const url = new URL(request.url);
+      const order = (url.searchParams.get('order') ?? 'asc') as Order;
+      return HttpResponse.json(
+        sortBy([...mockDB.accountIdMap.values()], 'name', order),
       );
-      const sorted = orderBy(txs, (t) => identifyDate(t, account), 'desc');
-      return HttpResponse.json(sorted);
     },
   ),
-  http.get(
-    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id/balances`,
+  http.post<never, AccountInput, Account>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts`,
+    async ({ request }) => {
+      const input = await request.json();
+      const account = { ...input, id: crypto.randomUUID() };
+      mockDB.accountIdMap.set(account.id, account);
+      return HttpResponse.json(account);
+    },
+  ),
+  http.get<{ id: Id }, never, Account>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id`,
     ({ params }) => {
-      const account = accounts.find((account) => account.id === params.id);
+      const account = mockDB.accountIdMap.get(params.id);
       if (!account) {
         throw HttpResponse.json(null, { status: 404 });
       }
-      const txs = transactions.filter((t) =>
-        t.entries
-          .map(toAccount)
-          .map((a) => a.id)
-          .includes(account.id),
+      return HttpResponse.json(account);
+    },
+  ),
+  http.put<{ id: Id }, AccountInput, Account>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id`,
+    async ({ params, request }) => {
+      const account = mockDB.accountIdMap.get(params.id);
+      if (!account) {
+        throw HttpResponse.json(null, { status: 404 });
+      }
+      const input = await request.json();
+      const replaced = { ...account, ...input };
+      mockDB.accountIdMap.set(params.id, replaced);
+      return HttpResponse.json(replaced);
+    },
+  ),
+  http.delete<{ id: Id }>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id`,
+    ({ params }) => {
+      const account = mockDB.accountIdMap.get(params.id);
+      if (!account) {
+        throw HttpResponse.json(null, { status: 404 });
+      }
+      mockDB.accountIdMap.delete(params.id);
+      mockDB.transactionIdMap.delete(params.id);
+    },
+  ),
+  http.get<{ id: Id }, never, Transaction[]>(
+    `${process.env.NEXT_PUBLIC_API_URL}/accounts/:id/transactions`,
+    ({ params, request }) => {
+      const account = mockDB.accountIdMap.get(params.id);
+      if (!account) {
+        throw HttpResponse.json(null, { status: 404 });
+      }
+      const url = new URL(request.url);
+      const order = (url.searchParams.get('order') ?? 'asc') as Order;
+      return HttpResponse.json(
+        orderBy(mockDB.accountIdTransactionsMap.get(params.id), 'date', order),
       );
-      const entries = txs
-        .flatMap((t) => t.entries)
-        .filter((e) => e.account.id === account.id);
-      const groups = Object.groupBy(entries, (x) => x.date);
-      const grouped = Object.entries(groups).map(
-        ([date, entries]) =>
-          ({
-            date,
-            amount: sum(
-              entries?.map((e) =>
-                getBalance(e.amount, e.isCredit, e.account.type),
-              ),
-            ),
-          }) as Balance,
-      );
-      const sorted = orderBy(grouped, 'date', 'asc');
-      let start = 0;
-      const cumsum: Balance[] = sorted.map((e) => ({
-        amount: (start += e.amount),
-        date: e.date,
-      }));
-      return HttpResponse.json(cumsum);
     },
   ),
 ];

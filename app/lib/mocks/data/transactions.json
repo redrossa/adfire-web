@@ -1,0 +1,374 @@
+[
+  {
+    "name": "Cash out",
+    "type": "transfer",
+    "entries": [
+      {
+        "date": "2025-07-23",
+        "amount": -100,
+        "account": {
+          "name": "Robinhood Individual",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-25",
+        "amount": 1.75,
+        "account": {
+          "name": "Robinhood",
+          "type": "expense"
+        }
+      },
+      {
+        "date": "2025-07-25",
+        "amount": 98.25,
+        "account": {
+          "name": "Chase Total Checking",
+          "type": "asset"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Investments",
+    "type": "transfer",
+    "entries": [
+      {
+        "date": "2025-07-23",
+        "amount": -3000,
+        "account": {
+          "name": "Wealthfront Individual",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-25",
+        "amount": 3000,
+        "account": {
+          "name": "Robinhood Individual",
+          "type": "asset"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Salary (Takehome)",
+    "type": "income",
+    "entries": [
+      {
+        "date": "2025-07-23",
+        "amount": 3101.29,
+        "account": {
+          "name": "Capital One 360",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-25",
+        "amount": 3101.29,
+        "account": {
+          "name": "SLB",
+          "type": "income"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-13",
+        "amount": -50,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-13",
+        "amount": 50,
+        "account": {
+          "name": "Amazon Credit",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-14",
+        "amount": -100,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-13",
+        "amount": -54.16,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-14",
+        "amount": -54.16,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-13",
+        "amount": -54.16,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-14",
+        "amount": -54.16,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-13",
+        "amount": -114.97,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-14",
+        "amount": -114.97,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-13",
+        "amount": 114.97,
+        "account": {
+          "name": "Amazon Credit",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-14",
+        "amount": -114.97,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-10",
+        "amount": 54.16,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 54.16,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-10",
+        "amount": 54.16,
+        "account": {
+          "name": "Amex Gold",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 54.16,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Groceries",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-10",
+        "amount": 64.32,
+        "account": {
+          "name": "Amex Gold",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-10",
+        "amount": 64.32,
+        "account": {
+          "name": "HEB",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-10",
+        "amount": 255.71,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 255.71,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Merchandise",
+    "type": "expense",
+    "entries": [
+      {
+        "date": "2025-07-10",
+        "amount": 255.71,
+        "account": {
+          "name": "Prime Visa",
+          "type": "liability"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 255.71,
+        "account": {
+          "name": "Amazon",
+          "type": "expense"
+        }
+      }
+    ]
+  },
+  {
+    "name": "Salary",
+    "type": "income",
+    "entries": [
+      {
+        "date": "2025-07-09",
+        "amount": 3101.29,
+        "account": {
+          "name": "Capital One 360",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 4175,
+        "account": {
+          "name": "SLB",
+          "type": "income"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 462.21,
+        "account": {
+          "name": "Uncle Sam",
+          "type": "expense"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 417.5,
+        "account": {
+          "name": "Alight 401k",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 142.3,
+        "account": {
+          "name": "Alight HSA",
+          "type": "asset"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 42.46,
+        "account": {
+          "name": "Medical Insurance",
+          "type": "expense"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 4.62,
+        "account": {
+          "name": "Dental Insurance",
+          "type": "expense"
+        }
+      },
+      {
+        "date": "2025-07-11",
+        "amount": 4.62,
+        "account": {
+          "name": "Vision Insurance",
+          "type": "expense"
+        }
+      }
+    ]
+  }
+]

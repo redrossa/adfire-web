@@ -1,23 +1,41 @@
 import { http, HttpResponse } from 'msw';
-import { transactions } from '@/app/lib/mocks/data/transactions';
+import { Entry, Id, Order, Transaction } from '@/app/lib/sdk';
+import { mockDB } from '@/app/lib/mocks';
 import { orderBy } from 'lodash';
-import { identifyDate } from '@/app/lib/selectors/transactions';
 
 export const handlers = [
-  http.get(`${process.env.NEXT_PUBLIC_API_URL}/transactions`, () => {
-    // return all transactions
-    const sorted = orderBy(transactions, (t) => identifyDate(t), 'desc');
-    return HttpResponse.json(sorted);
-  }),
-  http.get(
+  http.get<never, never, Transaction[]>(
+    `${process.env.NEXT_PUBLIC_API_URL}/transactions`,
+    ({ request }) => {
+      const url = new URL(request.url);
+      const order = (url.searchParams.get('order') ?? 'asc') as Order;
+      return HttpResponse.json(
+        orderBy([...mockDB.transactionIdMap.values()], 'date', order),
+      );
+    },
+  ),
+  http.get<{ id: Id }, never, Transaction>(
     `${process.env.NEXT_PUBLIC_API_URL}/transactions/:id`,
     ({ params }) => {
-      // return a transaction by id
-      const transaction = transactions.find((t) => t.id === params.id);
+      const transaction = mockDB.transactionIdMap.get(params.id);
       if (!transaction) {
         throw HttpResponse.json(null, { status: 404 });
       }
       return HttpResponse.json(transaction);
+    },
+  ),
+  http.get<{ id: Id }, never, Entry[]>(
+    `${process.env.NEXT_PUBLIC_API_URL}/transactions/:id/entries`,
+    ({ params, request }) => {
+      const transaction = mockDB.transactionIdMap.get(params.id);
+      if (!transaction) {
+        throw HttpResponse.json(null, { status: 404 });
+      }
+      const url = new URL(request.url);
+      const order = (url.searchParams.get('order') ?? 'asc') as Order;
+      return HttpResponse.json(
+        orderBy(mockDB.transactionIdEntriesMap.get(params.id), 'date', order),
+      );
     },
   ),
 ];

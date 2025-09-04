@@ -1,0 +1,88 @@
+[
+  {
+    "name": "Wealthfront Individual",
+    "type": "asset",
+    "domain": "wealthfront.com"
+  },
+  {
+    "name": "Robinhood Individual",
+    "type": "asset",
+    "domain": "robinhood.com"
+  },
+  {
+    "name": "Chase Total Checking",
+    "type": "asset",
+    "domain": "chase.com"
+  },
+  {
+    "name": "Capital One 360",
+    "type": "asset",
+    "domain": "capitalone.com"
+  },
+  {
+    "name": "Amex Gold",
+    "type": "liability",
+    "domain": "americanexpress.com"
+  },
+  {
+    "name": "Prime Visa",
+    "type": "liability",
+    "domain": "chase.com"
+  },
+  {
+    "name": "Alight 401k",
+    "type": "asset",
+    "domain": "alight.com"
+  },
+  {
+    "name": "Alight HSA",
+    "type": "asset",
+    "domain": "alight.com"
+  },
+  {
+    "name": "Amazon Credit",
+    "type": "asset"
+  },
+  {
+    "name": "SLB",
+    "type": "income",
+    "domain": "slb.com"
+  },
+  {
+    "name": "Uncle Sam",
+    "type": "expense",
+    "domain": "irs.gov"
+  },
+  {
+    "name": "Medical Insurance",
+    "type": "expense"
+  },
+  {
+    "name": "Dental Insurance",
+    "type": "expense"
+  },
+  {
+    "name": "Vision Insurance",
+    "type": "expense"
+  },
+  {
+    "name": "Amazon",
+    "type": "expense",
+    "domain": "amazon.com"
+  },
+  {
+    "name": "HEB",
+    "type": "expense",
+    "domain": "heb.com"
+  },
+  {
+    "name": "HEB Pharmacy",
+    "type": "expense",
+    "domain": "heb.com"
+  },
+  {
+    "name": "Robinhood",
+    "type": "expense",
+    "domain": "robinhood.com"
+  }
+]
