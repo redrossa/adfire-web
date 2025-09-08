@@ -6,7 +6,6 @@ import Footer from '@/app/components/footer';
 import { ThemeProvider } from 'next-themes';
 import { auth } from '@/auth';
 import { SessionProvider } from 'next-auth/react';
-import { setupServerHandlers } from '@/app/lib/mocks';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -33,7 +32,6 @@ export default async function RootLayout({
   children,
 }: Readonly<RootProps>) {
   const session = await auth();
-  await setupServerHandlers();
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -50,9 +48,9 @@ export default async function RootLayout({
               <div className="relative mx-auto w-full">
                 <div className="relative flex min-h-screen flex-col">
                   <Header />
-                  <main className="grow w-full max-w-6xl mx-auto my-4 sm:my-6">
+                  <div className="grow w-full max-w-6xl mx-auto my-4 sm:my-6">
                     {!session ? landing : children}
-                  </main>
+                  </div>
                   <Footer />
                 </div>
               </div>

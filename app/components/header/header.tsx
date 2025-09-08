@@ -3,6 +3,12 @@ import Image from 'next/image';
 import ProfileDropdown from '@/app/components/header/profile-dropdown';
 import { auth } from '@/auth';
 import { Button } from '@/app/components/ui/button';
+import { ArrowLeftRightIcon, UserIcon } from 'lucide-react';
+
+const links = [
+  { text: 'Transactions', Icon: ArrowLeftRightIcon, href: '/transactions' },
+  { text: 'Accounts', Icon: UserIcon, href: '/accounts' },
+];
 
 const Header = async () => {
   const session = await auth();
@@ -25,13 +31,14 @@ const Header = async () => {
           />
         </Link>
         <div className="flex items-center">
-          <Button asChild variant="link" size="sm">
-            <Link href="/transactions">Transactions</Link>
-          </Button>
-          <Button asChild variant="link" size="sm">
-            <Link href="/accounts">Accounts</Link>
-          </Button>
-          <div className="inline-flex ml-4 min-w-8">
+          <div className="hidden md:block">
+            {links.map(({ text, href }) => (
+              <Button key={text} asChild variant="link" size="sm">
+                <Link href={href}>{text}</Link>
+              </Button>
+            ))}
+          </div>
+          <div className="ml-4">
             <ProfileDropdown />
           </div>
         </div>

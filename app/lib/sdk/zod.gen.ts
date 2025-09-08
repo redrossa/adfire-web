@@ -76,9 +76,15 @@ export const zAccountInput = z.object({
 /**
  * An entity that acts upon a collection of transactions.
  */
-export const zAccount = zAccountInput.and(z.object({
-    id: zId
-}));
+export const zAccount = z.object({
+    id: zId,
+    name: zName,
+    type: zAccountType,
+    domain: z.union([
+        z.string(),
+        z.null()
+    ])
+});
 
 /**
  * Transaction type choices.
@@ -130,6 +136,14 @@ export const zTransaction = z.object({
 });
 
 /**
+ * Entry type depending on the sign amount due on the account and the account type.
+ */
+export const zEntryType = z.enum([
+    'credit',
+    'debit'
+]);
+
+/**
  * A component of a transaction that records a balance change to an account at a specific date.
  */
 export const zEntry = z.object({
@@ -157,10 +171,17 @@ export const zOrder = z.enum([
     'desc'
 ]);
 
+/**
+ * Maximum number of items returned. If not provided, will attempt to return all available items.
+ */
+export const zLimit = z.number();
+
 export const zGetAccountsData = z.object({
     body: z.optional(z.never()),
     path: z.optional(z.never()),
-    query: z.optional(z.never())
+    query: z.optional(z.object({
+        limit: z.optional(z.number())
+    }))
 });
 
 /**
@@ -227,7 +248,8 @@ export const zGetAccountsByIdTransactionsData = z.object({
         order: z.optional(z.enum([
             'asc',
             'desc'
-        ]))
+        ])),
+        limit: z.optional(z.number())
     }))
 });
 
@@ -243,7 +265,8 @@ export const zGetTransactionsData = z.object({
         order: z.optional(z.enum([
             'asc',
             'desc'
-        ]))
+        ])),
+        limit: z.optional(z.number())
     }))
 });
 

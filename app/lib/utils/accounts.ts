@@ -1,4 +1,6 @@
-export function getInitials(name: string, firstCharOnly?: boolean) {
+import { isNil } from 'lodash';
+
+export function getInitials(name: string, maxChar?: number) {
   const words = name.split(' ');
   let initials = '';
 
@@ -7,7 +9,7 @@ export function getInitials(name: string, firstCharOnly?: boolean) {
       initials += word.charAt(0).toUpperCase();
     }
   }
-  return firstCharOnly && initials.length ? initials[0] : initials;
+  return isNil(maxChar) ? initials : initials.slice(0, maxChar);
 }
 
 export function getLogo(domain: string, size: number = 128): string {

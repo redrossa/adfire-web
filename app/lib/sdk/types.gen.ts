@@ -112,8 +112,14 @@ export type AccountInput = {
 /**
  * An entity that acts upon a collection of transactions.
  */
-export type Account = AccountInput & {
+export type Account = {
     id: Id;
+    name: Name;
+    type: AccountType;
+    /**
+     * The institutional domain name associated with this account.
+     */
+    domain: string | null;
 };
 
 /**
@@ -181,6 +187,19 @@ export type Transaction = {
 };
 
 /**
+ * Entry type depending on the sign amount due on the account and the account type.
+ */
+export const EntryType = {
+    CREDIT: 'credit',
+    DEBIT: 'debit'
+} as const;
+
+/**
+ * Entry type depending on the sign amount due on the account and the account type.
+ */
+export type EntryType = typeof EntryType[keyof typeof EntryType];
+
+/**
  * A simplified representation of an entry before creation.
  */
 export type EntryInput = {
@@ -234,10 +253,20 @@ export const Order = {
  */
 export type Order = typeof Order[keyof typeof Order];
 
+/**
+ * Maximum number of items returned. If not provided, will attempt to return all available items.
+ */
+export type Limit = number;
+
 export type GetAccountsData = {
     body?: never;
     path?: never;
-    query?: never;
+    query?: {
+        /**
+         * Maximum number of items returned. If not provided, will attempt to return all available items.
+         */
+        limit?: number;
+    };
     url: '/accounts';
 };
 
@@ -378,6 +407,10 @@ export type GetAccountsByIdTransactionsData = {
          * Order to sort entities by date.
          */
         order?: 'asc' | 'desc';
+        /**
+         * Maximum number of items returned. If not provided, will attempt to return all available items.
+         */
+        limit?: number;
     };
     url: '/accounts/{id}/transactions';
 };
@@ -406,6 +439,10 @@ export type GetTransactionsData = {
          * Order to sort entities by date.
          */
         order?: 'asc' | 'desc';
+        /**
+         * Maximum number of items returned. If not provided, will attempt to return all available items.
+         */
+        limit?: number;
     };
     url: '/transactions';
 };

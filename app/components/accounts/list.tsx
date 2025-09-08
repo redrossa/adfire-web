@@ -1,6 +1,6 @@
 'use client';
 
-import { Account } from '@/app/lib/sdk';
+import { Account, AccountType } from '@/app/lib/sdk';
 import List from '@/app/components/list';
 import {
   CellContext,
@@ -16,7 +16,7 @@ import {
   AvatarImage,
 } from '@/app/components/ui/avatar';
 import { AccountLink } from '@/app/components/accounts/links';
-import { pluralize } from 'pluralize';
+import pluralize from 'pluralize';
 
 interface AccountsListProps {
   accounts: Account[];
@@ -24,8 +24,8 @@ interface AccountsListProps {
 
 const AccountDetailCell = ({ row }: CellContext<Account, unknown>) => {
   const account = row.original;
-  const initials = getInitials(account.name, true);
-  const logo = account.domain && getLogo(account.domain);
+  const initials = getInitials(account.name, 2);
+  const logo = account.domain ? getLogo(account.domain) : undefined;
   return (
     <div className="p-2 text-sm md:text-base flex gap-4 items-center">
       <Avatar className="size-8 border">
@@ -44,7 +44,7 @@ const AccountDetailCell = ({ row }: CellContext<Account, unknown>) => {
   );
 };
 
-const AccountListGroup = ({ accounts }: AccountsListProps) => {
+export const AccountList = ({ accounts }: AccountsListProps) => {
   const columnHelper = createColumnHelper<Account>();
   const columns = useMemo(
     () => [
@@ -65,21 +65,21 @@ const AccountListGroup = ({ accounts }: AccountsListProps) => {
   return <List table={table} />;
 };
 
-export const AccountList = ({ accounts }: AccountsListProps) => {
+export const AccountListGrouped = ({ accounts }: AccountsListProps) => {
   const grouped = Object.groupBy(accounts, (it) => it.type);
   return (
-    <div className="flex flex-col gap-4">
-      {Object.entries(grouped).map(
-        ([type, group]) =>
-          group?.length && (
+    <section className="space-y-6">
+      {Object.values(AccountType).map(
+        (type) =>
+          grouped[type]?.length && (
             <div key={type}>
-              <p className="mb-2 capitalize">
-                <small>{pluralize(type)}</small>
+              <p className="mb-2 capitalize leading-none text-muted-foreground text-sm font-medium">
+                {pluralize(type)}
               </p>
-              <AccountListGroup accounts={group} />
+              <AccountList accounts={grouped[type]} />
             </div>
           ),
       )}
-    </div>
+    </section>
   );
 };

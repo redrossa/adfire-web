@@ -1,7 +1,11 @@
 import { AccountDetail } from '@/app/components/accounts';
-import { TransactionList } from '@/app/components/transactions';
+import { TransactionListGrouped } from '@/app/components/transactions';
 import { getAccountsById, getAccountsByIdTransactions } from '@/app/lib/sdk';
 import { notFound } from 'next/navigation';
+import { Button } from '@/app/components/ui/button';
+import Link from 'next/link';
+import { PencilIcon, PlusIcon } from 'lucide-react';
+import { cookies } from 'next/headers';
 
 interface Props {
   params: Promise<{
@@ -11,8 +15,17 @@ interface Props {
 
 export default async function AccountPage({ params }: Props) {
   const { id } = await params;
-  const { data: account } = await getAccountsById({ path: { id } });
+  const cookieStore = await cookies();
+  const { data: account } = await getAccountsById({
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    path: { id },
+  });
   const { data: transactions } = await getAccountsByIdTransactions({
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
     path: { id },
     query: { order: 'desc' },
   });
@@ -20,16 +33,30 @@ export default async function AccountPage({ params }: Props) {
     notFound();
   }
   return (
-    <div className="flex flex-col gap-8">
-      <AccountDetail account={account} />
+    <main className="space-y-8">
+      <section className="flex items-center justify-between">
+        <AccountDetail account={account} />
+        <Button asChild size="sm" variant="ghost">
+          <Link href={`/accounts/${id}/edit`}>
+            <PencilIcon /> <span className="hidden md:block">Edit</span>
+          </Link>
+        </Button>
+      </section>
       {!transactions?.length ? (
         <p>No transactions in this account.</p>
       ) : (
-        <div>
-          <h2 className="font-bold mb-2">Related transactions</h2>
-          <TransactionList transactions={transactions} />
-        </div>
+        <section className="space-y-4">
+          <div className="flex justify-between items-center">
+            <h2 className="font-bold">Related transactions</h2>
+            <Button asChild size="sm">
+              <Link href="/transactions/new">
+                <PlusIcon /> <span className="hidden md:block">New</span>
+              </Link>
+            </Button>
+          </div>
+          <TransactionListGrouped transactions={transactions} />
+        </section>
       )}
-    </div>
+    </main>
   );
 }

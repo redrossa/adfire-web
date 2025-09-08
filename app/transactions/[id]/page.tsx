@@ -1,7 +1,8 @@
 import { TransactionHeading } from '@/app/components/transactions';
-import { EntryList } from '@/app/components/entries';
+import { EntryListGrouped } from '@/app/components/entries';
 import { getTransactionsById, getTransactionsByIdEntries } from '@/app/lib/sdk';
 import { notFound } from 'next/navigation';
+import { cookies } from 'next/headers';
 
 interface Props {
   params: Promise<{
@@ -11,18 +12,29 @@ interface Props {
 
 export default async function TransactionPage({ params }: Props) {
   const { id } = await params;
-  const { data: transaction } = await getTransactionsById({ path: { id } });
-  const { data: entries } = await getTransactionsByIdEntries({ path: { id } });
+  const cookieStore = await cookies();
+  const { data: transaction } = await getTransactionsById({
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    path: { id },
+  });
+  const { data: entries } = await getTransactionsByIdEntries({
+    headers: {
+      Cookie: cookieStore.toString(),
+    },
+    path: { id },
+  });
   if (!transaction || !entries) {
     // A transaction needs to have entries
     notFound();
   }
   return (
-    <div className="flex flex-col gap-4">
-      <span className="text-xl">
+    <main className="space-y-8">
+      <section className="text-xl">
         <TransactionHeading transaction={transaction} showDate />
-      </span>
-      <EntryList entries={entries} />
-    </div>
+      </section>
+      <EntryListGrouped entries={entries} />
+    </main>
   );
 }

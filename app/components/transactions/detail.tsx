@@ -7,6 +7,7 @@ import { dayjs, premiumDollarFormatter } from '@/app/lib/utils/format';
 
 interface TransactionDetailProps {
   transaction: Transaction;
+  showDate?: boolean;
 }
 
 export const TransactionTitle = ({ transaction }: TransactionDetailProps) => {
@@ -24,14 +25,10 @@ export const TransactionTitle = ({ transaction }: TransactionDetailProps) => {
   );
 };
 
-interface TransactionSubtitleProps extends TransactionDetailProps {
-  showDate?: boolean;
-}
-
 export const TransactionSubtitle = ({
   transaction,
   showDate,
-}: TransactionSubtitleProps) => {
+}: TransactionDetailProps) => {
   let action: string;
   switch (transaction.type) {
     case TransactionType.INCOME:
@@ -58,12 +55,10 @@ export const TransactionSubtitle = ({
   );
 };
 
-type TransactionHeadingProps = TransactionSubtitleProps;
-
 export const TransactionHeading = ({
   transaction,
   showDate,
-}: TransactionHeadingProps) => (
+}: TransactionDetailProps) => (
   <div className="flex flex-col">
     <TransactionTitle transaction={transaction} />
     <TransactionSubtitle transaction={transaction} showDate={showDate} />

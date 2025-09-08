@@ -17,11 +17,18 @@ import { Transaction } from '@/app/lib/sdk';
 
 interface TransactionsListProps {
   transactions: Transaction[];
+  showDate?: boolean;
 }
 
-const TransactionDetailCell = ({ row }: CellContext<Transaction, unknown>) => (
+const TransactionDetailCell = ({
+  row,
+  column,
+}: CellContext<Transaction, unknown>) => (
   <div className="p-2 text-sm md:text-base">
-    <TransactionHeading transaction={row.original} />
+    <TransactionHeading
+      transaction={row.original}
+      showDate={(column.columnDef.meta as any)?.showDate}
+    />
   </div>
 );
 
@@ -45,12 +52,16 @@ const TransactionDollarCell = ({ row }: CellContext<Transaction, unknown>) => {
   );
 };
 
-const TransactionListGroup = ({ transactions }: TransactionsListProps) => {
+export const TransactionList = ({
+  transactions,
+  showDate,
+}: TransactionsListProps) => {
   const columnHelper = createColumnHelper<Transaction>();
   const columns = useMemo(
     () => [
       columnHelper.display({
         id: 'detail',
+        meta: { showDate },
         cell: TransactionDetailCell,
       }),
       columnHelper.display({
@@ -70,21 +81,23 @@ const TransactionListGroup = ({ transactions }: TransactionsListProps) => {
   return <List table={table} />;
 };
 
-export const TransactionList = ({ transactions }: TransactionsListProps) => {
+export const TransactionListGrouped = ({
+  transactions,
+}: TransactionsListProps) => {
   const grouped = Object.groupBy(transactions, (it) => it.date);
   return (
-    <div className="flex flex-col gap-4">
+    <section className="space-y-6">
       {Object.entries(grouped).map(
         ([date, group]) =>
           group?.length && (
             <div key={date}>
-              <p className="mb-2">
-                <small>{dayjs(date).format('LL')}</small>
+              <p className="mb-2 leading-none text-muted-foreground text-sm font-medium">
+                {dayjs(date).format('LL')}
               </p>
-              <TransactionListGroup transactions={group} />
+              <TransactionList transactions={group} />
             </div>
           ),
       )}
-    </div>
+    </section>
   );
 };

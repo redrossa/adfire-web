@@ -13,8 +13,8 @@ interface Props {
 }
 
 export const AccountLink = ({ account, hideIcon = false }: Props) => {
-  const initials = getInitials(account.name, true);
-  const logo = account.domain && getLogo(account.domain);
+  const initials = getInitials(account.name, 1);
+  const logo = account.domain ? getLogo(account.domain) : undefined;
   return (
     <Link href={`/accounts/${account.id}`}>
       <span className="items-baseline group inline-flex rounded-md gap-1 border-0 whitespace-nowrap">

@@ -1,5 +1,3 @@
-'use client';
-
 import {
   Avatar,
   AvatarFallback,
@@ -14,8 +12,8 @@ interface Props {
 }
 
 export const AccountDetail = ({ account }: Props) => {
-  const initials = getInitials(account.name, true);
-  const logo = account.domain && getLogo(account.domain);
+  const initials = getInitials(account.name, 2);
+  const logo = account.domain ? getLogo(account.domain) : undefined;
   return (
     <div className="flex items-center gap-6">
       <Avatar className="size-16 border">

@@ -1,6 +1,6 @@
 'use client';
 
-import { Entry } from '@/app/lib/sdk';
+import { Entry, EntryType } from '@/app/lib/sdk';
 import {
   CellContext,
   createColumnHelper,
@@ -20,6 +20,7 @@ import { useMemo } from 'react';
 import { isCredit, isInternal } from '@/app/lib/utils/entries';
 import { useReactTable } from '@tanstack/react-table';
 import List from '@/app/components/list';
+import pluralize from 'pluralize';
 
 interface EntriesListProps {
   entries: Entry[];
@@ -27,8 +28,8 @@ interface EntriesListProps {
 
 const EntryDetailCell = ({ row }: CellContext<Entry, unknown>) => {
   const account = row.original.account;
-  const initials = getInitials(account.name, true);
-  const logo = account.domain && getLogo(account.domain);
+  const initials = getInitials(account.name, 2);
+  const logo = account.domain ? getLogo(account.domain) : undefined;
   return (
     <div className="p-2 text-sm md:text-base flex gap-4 items-center">
       <Avatar className="size-8 border">
@@ -70,7 +71,7 @@ const EntryDollarCell = ({ row }: CellContext<Entry, unknown>) => {
   );
 };
 
-const EntryListGroup = ({ entries }: EntriesListProps) => {
+export const EntryList = ({ entries }: EntriesListProps) => {
   const columnHelper = createColumnHelper<Entry>();
   const columns = useMemo(
     () => [
@@ -95,24 +96,23 @@ const EntryListGroup = ({ entries }: EntriesListProps) => {
   return <List table={table} />;
 };
 
-export const EntryList = ({ entries }: EntriesListProps) => {
-  const keys = ['Credits', 'Debits'] as const;
+export const EntryListGrouped = ({ entries }: EntriesListProps) => {
   const grouped = Object.groupBy(entries, (it) =>
-    isCredit(it) ? 'Credits' : 'Debits',
+    isCredit(it) ? EntryType.CREDIT : EntryType.DEBIT,
   );
   return (
-    <div className="flex flex-col gap-4">
-      {keys.map(
-        (key) =>
-          grouped[key]?.length && (
-            <div key={key}>
-              <p className="mb-2">
-                <small>{key}</small>
+    <section className="space-y-4">
+      {Object.values(EntryType).map(
+        (type) =>
+          grouped[type]?.length && (
+            <div key={type}>
+              <p className="mb-2 capitalize leading-none text-muted-foreground text-sm font-medium">
+                {pluralize(type)}
               </p>
-              <EntryListGroup entries={grouped[key]} />
+              <EntryList entries={grouped[type]} />
             </div>
           ),
       )}
-    </div>
+    </section>
   );
 };
