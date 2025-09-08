@@ -80,7 +80,7 @@ export default async function DashboardPage() {
           <div className="flex justify-between items-center">
             <h2 className="font-bold">Your accounts</h2>
             <Button asChild size="sm">
-              <Link href="/transactions/new">
+              <Link href="/accounts/new">
                 <PlusIcon /> <span className="hidden md:block">New</span>
               </Link>
             </Button>

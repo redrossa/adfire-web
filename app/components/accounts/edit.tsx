@@ -172,13 +172,7 @@ export function AccountForm({ account, forwardPath }: Readonly<Props>) {
           )}
         />
 
-        <div className="flex gap-4 justify-between">
-          <div className="flex gap-4 order-last md:order-first ml-auto md:ml-0">
-            <Button type="submit">{account ? 'Save' : 'Create'}</Button>
-            <Button type="button" onClick={routeForward} variant="outline">
-              Cancel
-            </Button>
-          </div>
+        <div className="flex gap-4 flex-row md:flex-row-reverse">
           <Button
             type="button"
             variant="destructive"
@@ -187,6 +181,15 @@ export function AccountForm({ account, forwardPath }: Readonly<Props>) {
           >
             Delete
           </Button>
+          <Button
+            type="button"
+            onClick={routeForward}
+            variant="ghost"
+            className="ml-auto mr-0 md:ml-0 md:mr-auto"
+          >
+            Cancel
+          </Button>
+          <Button type="submit">{account ? 'Save' : 'Create'}</Button>
         </div>
         {!!form.formState.errors.root?.serverError && (
           <FormMessage>Something went wrong, please try again.</FormMessage>
