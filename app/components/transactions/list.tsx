@@ -69,7 +69,7 @@ export const TransactionList = ({
         cell: TransactionDollarCell,
       }),
     ],
-    [columnHelper],
+    [columnHelper, showDate],
   );
 
   const table = useReactTable({

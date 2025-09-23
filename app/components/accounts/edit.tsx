@@ -120,7 +120,7 @@ export function AccountForm({ account, forwardPath }: Readonly<Props>) {
           name="name"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Account name</FormLabel>
+              <FormLabel>Name</FormLabel>
               <FormControl className="w-full">
                 <Input
                   placeholder="Ex. Chase Freedom Unlimited"
@@ -138,7 +138,7 @@ export function AccountForm({ account, forwardPath }: Readonly<Props>) {
           name="type"
           render={({ field }) => (
             <FormItem>
-              <FormLabel>Account type</FormLabel>
+              <FormLabel>Type</FormLabel>
               <Select onValueChange={field.onChange} value={field.value}>
                 <FormControl className="w-full">
                   <SelectTrigger className="text-base" tabIndex={0}>
@@ -172,7 +172,7 @@ export function AccountForm({ account, forwardPath }: Readonly<Props>) {
           )}
         />
 
-        <div className="flex gap-4 flex-row md:flex-row-reverse">
+        <div className="flex gap-4 flex-row md:flex-row-reverse mt-8">
           <Button
             type="button"
             variant="destructive"

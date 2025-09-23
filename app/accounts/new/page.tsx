@@ -6,11 +6,9 @@ export default async function AccountsNewPage() {
   const referer = headersList.get('referer');
   const forwardPath = referer ? new URL(referer).pathname : undefined;
   return (
-    <>
-      <div className="flex justify-between items-center mb-4 min-h-8">
-        <h1 className="text-lg md:text-xl font-bold">Add account</h1>
-      </div>
+    <main className="space-y-6">
+      <h1 className="text-lg md:text-xl font-bold">Add account</h1>
       <AccountForm forwardPath={forwardPath} />
-    </>
+    </main>
   );
 }

@@ -34,7 +34,7 @@ const AccountDetailCell = ({ row }: CellContext<Account, unknown>) => {
       </Avatar>
       <div className="flex flex-col">
         <h3 className="font-bold">
-          <AccountLink account={account} hideIcon />
+          <AccountLink account={account} withLogo={false} />
         </h3>
         <p className="text-muted-foreground">
           <small className="capitalize">{account.type}</small>

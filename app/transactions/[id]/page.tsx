@@ -3,6 +3,9 @@ import { EntryListGrouped } from '@/app/components/entries';
 import { getTransactionsById, getTransactionsByIdEntries } from '@/app/lib/sdk';
 import { notFound } from 'next/navigation';
 import { cookies } from 'next/headers';
+import Link from 'next/link';
+import { PencilIcon } from 'lucide-react';
+import { Button } from '@/app/components/ui/button';
 
 interface Props {
   params: Promise<{
@@ -31,8 +34,15 @@ export default async function TransactionPage({ params }: Props) {
   }
   return (
     <main className="space-y-8">
-      <section className="text-xl">
-        <TransactionHeading transaction={transaction} showDate />
+      <section className="flex items-center justify-between">
+        <div className="text-xl">
+          <TransactionHeading transaction={transaction} showDate />
+        </div>
+        <Button asChild size="sm" variant="ghost">
+          <Link href={`/transactions/${id}/edit`}>
+            <PencilIcon /> <span className="hidden md:block">Edit</span>
+          </Link>
+        </Button>
       </section>
       <EntryListGrouped entries={entries} />
     </main>

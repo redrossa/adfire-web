@@ -15,34 +15,22 @@ export const zId = z.uuid();
 /**
  * Account types that the user owns.
  */
-export const zInternalAccountType = z.enum([
-    'asset',
-    'liability'
-]);
+export const zInternalAccountType = z.enum(['asset', 'liability']);
 
 /**
  * Account types that the user does not own.
  */
-export const zExternalAccountType = z.enum([
-    'income',
-    'expense'
-]);
+export const zExternalAccountType = z.enum(['income', 'expense']);
 
 /**
  * Account types with a normal debit balance.
  */
-export const zDebitAccountType = z.enum([
-    'asset',
-    'expense'
-]);
+export const zDebitAccountType = z.enum(['asset', 'expense']);
 
 /**
  * Account types with a normal credit balance.
  */
-export const zCreditAccountType = z.enum([
-    'liability',
-    'income'
-]);
+export const zCreditAccountType = z.enum(['liability', 'income']);
 
 /**
  * Account type choices. Each type of account changes balance based on the following context:
@@ -57,100 +45,85 @@ export const zCreditAccountType = z.enum([
  * external accounts, e.g. `income` and `expense` do not contribute to portfolio equity.
  *
  */
-export const zAccountType = z.enum([
-    'asset',
-    'liability',
-    'income',
-    'expense'
-]);
+export const zAccountType = z.enum(['asset', 'liability', 'income', 'expense']);
 
 /**
  * A simplified representation of an account before creation.
  */
 export const zAccountInput = z.object({
-    name: zName,
-    type: zAccountType,
-    domain: z.optional(z.string())
+  name: zName,
+  type: zAccountType,
+  domain: z.optional(z.string()),
 });
 
 /**
  * An entity that acts upon a collection of transactions.
  */
 export const zAccount = z.object({
-    id: zId,
-    name: zName,
-    type: zAccountType,
-    domain: z.union([
-        z.string(),
-        z.null()
-    ])
+  id: zId,
+  name: zName,
+  type: zAccountType,
+  domain: z.union([z.string(), z.null()]),
 });
 
 /**
  * Transaction type choices.
  */
-export const zTransactionType = z.enum([
-    'income',
-    'expense',
-    'transfer'
-]);
+export const zTransactionType = z.enum(['income', 'expense', 'transfer']);
 
 /**
  * A simplified representation of an entry before creation.
  */
 export const zEntryInput = z.object({
-    date: z.iso.date(),
-    amount: z.number(),
-    accountId: zId
+  date: z.iso.date(),
+  amount: z.number(),
+  accountId: zId,
 });
 
 /**
  * A simplified representation of a transaction before creation.
  */
 export const zTransactionInput = z.object({
-    name: zName,
-    type: zTransactionType,
-    entries: z.array(zEntryInput)
+  name: zName,
+  type: zTransactionType,
+  entries: z.array(zEntryInput),
 });
 
 /**
  * A detail of one side of a transaction.
  */
 export const zTransactionSide = z.object({
-    accounts: z.array(zAccount),
-    equity: z.number()
+  accounts: z.array(zAccount),
+  equity: z.number(),
 });
 
 /**
  * An event involving an exchange of monetary values between accounts.
  */
 export const zTransaction = z.object({
-    id: zId,
-    name: zName,
-    type: zTransactionType,
-    date: z.iso.date(),
-    equity: z.number(),
-    value: z.optional(z.number().gt(true)),
-    from: zTransactionSide,
-    to: zTransactionSide
+  id: zId,
+  name: zName,
+  type: zTransactionType,
+  date: z.iso.date(),
+  equity: z.number(),
+  value: z.optional(z.number().gt(0)),
+  from: zTransactionSide,
+  to: zTransactionSide,
 });
 
 /**
  * Entry type depending on the sign amount due on the account and the account type.
  */
-export const zEntryType = z.enum([
-    'credit',
-    'debit'
-]);
+export const zEntryType = z.enum(['credit', 'debit']);
 
 /**
  * A component of a transaction that records a balance change to an account at a specific date.
  */
 export const zEntry = z.object({
-    id: zId,
-    date: z.iso.date(),
-    amount: z.number(),
-    account: zAccount
+  id: zId,
+  date: z.iso.date(),
+  amount: z.number(),
+  account: zAccount,
 });
 
 /**
@@ -166,10 +139,7 @@ export const zId2 = zId;
 /**
  * Order to sort entities by date.
  */
-export const zOrder = z.enum([
-    'asc',
-    'desc'
-]);
+export const zOrder = z.enum(['asc', 'desc']);
 
 /**
  * Maximum number of items returned. If not provided, will attempt to return all available items.
@@ -177,11 +147,13 @@ export const zOrder = z.enum([
 export const zLimit = z.number();
 
 export const zGetAccountsData = z.object({
-    body: z.optional(z.never()),
-    path: z.optional(z.never()),
-    query: z.optional(z.object({
-        limit: z.optional(z.number())
-    }))
+  body: z.optional(z.never()),
+  path: z.optional(z.never()),
+  query: z.optional(
+    z.object({
+      limit: z.optional(z.number()),
+    }),
+  ),
 });
 
 /**
@@ -190,9 +162,9 @@ export const zGetAccountsData = z.object({
 export const zGetAccountsResponse = z.array(zAccount);
 
 export const zPostAccountsData = z.object({
-    body: zAccountInput,
-    path: z.optional(z.never()),
-    query: z.optional(z.never())
+  body: zAccountInput,
+  path: z.optional(z.never()),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -201,11 +173,11 @@ export const zPostAccountsData = z.object({
 export const zPostAccountsResponse = zAccount;
 
 export const zDeleteAccountsByIdData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -214,11 +186,11 @@ export const zDeleteAccountsByIdData = z.object({
 export const zDeleteAccountsByIdResponse = z.void();
 
 export const zGetAccountsByIdData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -227,11 +199,11 @@ export const zGetAccountsByIdData = z.object({
 export const zGetAccountsByIdResponse = zAccount;
 
 export const zPutAccountsByIdData = z.object({
-    body: zAccountInput,
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: zAccountInput,
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -240,17 +212,16 @@ export const zPutAccountsByIdData = z.object({
 export const zPutAccountsByIdResponse = zAccount;
 
 export const zGetAccountsByIdTransactionsData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(
+    z.object({
+      order: z.optional(z.enum(['asc', 'desc'])),
+      limit: z.optional(z.number()),
     }),
-    query: z.optional(z.object({
-        order: z.optional(z.enum([
-            'asc',
-            'desc'
-        ])),
-        limit: z.optional(z.number())
-    }))
+  ),
 });
 
 /**
@@ -259,15 +230,14 @@ export const zGetAccountsByIdTransactionsData = z.object({
 export const zGetAccountsByIdTransactionsResponse = z.array(zTransaction);
 
 export const zGetTransactionsData = z.object({
-    body: z.optional(z.never()),
-    path: z.optional(z.never()),
-    query: z.optional(z.object({
-        order: z.optional(z.enum([
-            'asc',
-            'desc'
-        ])),
-        limit: z.optional(z.number())
-    }))
+  body: z.optional(z.never()),
+  path: z.optional(z.never()),
+  query: z.optional(
+    z.object({
+      order: z.optional(z.enum(['asc', 'desc'])),
+      limit: z.optional(z.number()),
+    }),
+  ),
 });
 
 /**
@@ -276,9 +246,9 @@ export const zGetTransactionsData = z.object({
 export const zGetTransactionsResponse = z.array(zTransaction);
 
 export const zPostTransactionsData = z.object({
-    body: zTransactionInput,
-    path: z.optional(z.never()),
-    query: z.optional(z.never())
+  body: zTransactionInput,
+  path: z.optional(z.never()),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -287,11 +257,11 @@ export const zPostTransactionsData = z.object({
 export const zPostTransactionsResponse = zTransaction;
 
 export const zDeleteTransactionsByIdData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -300,11 +270,11 @@ export const zDeleteTransactionsByIdData = z.object({
 export const zDeleteTransactionsByIdResponse = z.void();
 
 export const zGetTransactionsByIdData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -313,11 +283,11 @@ export const zGetTransactionsByIdData = z.object({
 export const zGetTransactionsByIdResponse = zTransaction;
 
 export const zPutTransactionsByIdData = z.object({
-    body: zTransactionInput,
-    path: z.object({
-        id: zId
-    }),
-    query: z.optional(z.never())
+  body: zTransactionInput,
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(z.never()),
 });
 
 /**
@@ -326,16 +296,15 @@ export const zPutTransactionsByIdData = z.object({
 export const zPutTransactionsByIdResponse = zTransaction;
 
 export const zGetTransactionsByIdEntriesData = z.object({
-    body: z.optional(z.never()),
-    path: z.object({
-        id: zId
+  body: z.optional(z.never()),
+  path: z.object({
+    id: zId,
+  }),
+  query: z.optional(
+    z.object({
+      order: z.optional(z.enum(['asc', 'desc'])),
     }),
-    query: z.optional(z.object({
-        order: z.optional(z.enum([
-            'asc',
-            'desc'
-        ]))
-    }))
+  ),
 });
 
 /**

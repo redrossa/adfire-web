@@ -20,7 +20,7 @@ export const TransactionTitle = ({ transaction }: TransactionDetailProps) => {
           {transaction.name}
         </span>
       </Link>{' '}
-      {key} <AccountMultilink accounts={accounts} />
+      {key} <AccountMultilink accounts={accounts} withLogo />
     </h3>
   );
 };
@@ -48,7 +48,7 @@ export const TransactionSubtitle = ({
     <p className="text-muted-foreground">
       <small>
         {action} {premiumDollarFormatter.format(Math.abs(equity))} {key}{' '}
-        <AccountMultilink accounts={accounts} />{' '}
+        <AccountMultilink accounts={accounts} withLogo />{' '}
         {!showDate ? '' : `on ${dayjs(transaction.date).format('LL')}`}
       </small>
     </p>

@@ -22,7 +22,7 @@ export const AccountDetail = ({ account }: Props) => {
       </Avatar>
       <div className="flex flex-col">
         <h1 className="font-bold text-lg">
-          <AccountLink account={account} hideIcon />
+          <AccountLink account={account} withLogo={false} />
         </h1>
         <p className="capitalize text-muted-foreground">{account.type}</p>
       </div>

@@ -35,7 +35,7 @@ const List = <TData extends RowData>({ table }: Props<TData>) => (
           <TableRow>
             <TableCell
               colSpan={table.getAllColumns().length}
-              className="h-24 text-center"
+              className="h-8 text-center"
             >
               No results.
             </TableCell>
